@@ -12,7 +12,7 @@ export const Header = ({title, description, concatenateHeader = true, children}:
     return (
         <Head>
             <title>{title ?? "Medvista"}</title>
-            <meta name="description" content={description ?? "Project Management Software."} />
+            <meta name="description" content={description ?? "Your medical records, secure and accessible."} />
             <link rel="icon" href="/favicon.ico" />
             {children}
         </Head>
