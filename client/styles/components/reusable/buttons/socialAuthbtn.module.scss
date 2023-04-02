@@ -1,0 +1,48 @@
+.social_auth_btn {
+    display: flex;
+    height: 40px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    max-width: 300px;
+    .social_auth_btn_icon {
+        display: flex;
+        height: 100%;
+        width: 40px;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+    }
+    &.social_auth_btn_orientation_start {
+        flex-direction: row;
+    }
+    &.social_auth_btn_orientation_end {
+        flex-direction: row-reverse;
+    }
+    &.social_auth_btn_variant_google {
+        background: white;
+        border: var(--default-border);
+        border-radius: 6px;
+        &:hover {
+            background: rgb(225, 225, 225);
+        }
+    }
+    &.social_auth_btn_variant_github {
+        background: #0d1117;
+        border: 1px solid #0d1117;
+        border-radius: 6px;
+        color: white;
+        .social_auth_btn_icon {
+            color: white;
+        }
+        &:hover {
+            background: #1c2532;
+        }
+    }
+    &:hover {
+        cursor: pointer;
+    }
+}

@@ -1,0 +1,14 @@
+.login_form {
+    display: flex;
+    height: fit-content;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    div[data-elm-type = "input"] {
+        margin-top: 10px;
+    }
+    button[type = "submit"] {
+        margin-top: 16px;
+    }
+}

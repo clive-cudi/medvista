@@ -1,0 +1,53 @@
+.input_div_wrapper {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    max-width: 400px;
+    align-items: center;
+    border: var(--default-border);
+    border-radius: 6px;
+    padding: 0px 0px 0px 4px;
+    transition-timing-function: ease-in-out;
+    transition-duration: 0.4s;
+    input {
+        height: 100%;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        outline: none;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-size: 15px;
+        border-radius: 6px;
+        letter-spacing: 0.4px;
+        caret-color: var(--blue-accent-color);
+    }
+    span[data-elm-type = "input-icon"] {
+        display: flex;
+        height: 100%;
+        width: 40px;
+        min-width: 40px;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: gray;
+    }
+    span[data-elm-type = "password-preview-icon"] {
+        display: flex;
+        height: 100%;
+        width: 40px;
+        min-width: 40px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+    &:hover {
+        border: var(--default-border-hover);
+        span[data-elm-type = "input-icon"] {
+            color: var(--blue-accent-color)
+        }
+    }
+    &:focus {
+        border: 1px solid var(--blue-accent-color);
+        cursor: alias;
+    }
+}

@@ -1,0 +1,125 @@
+.regular_btn {
+    display: flex;
+    height: 50px;
+    width: 100%;
+    max-width: 240px;
+    align-items: center;
+    justify-content: space-evenly;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    position: relative;
+    span {
+        display: flex;
+        height: 100%;
+        width: 40px;
+        align-items: center;
+        justify-content: center;
+    }
+    &.regular_btn_contained {
+        // border: 1px solid var(--blue-accent-color);
+        border: none;
+        background: var(--blue-gradient);
+        color: white;
+        border-radius: 6px;
+        transition-timing-function: ease-in-out;
+        transition-duration: 0.4s;
+        &:hover {
+            cursor: pointer;
+            background: linear-gradient(to right, rgb(138, 196, 243), rgb(78, 99, 182));
+            box-shadow: var(--default-box-shadow);
+        }
+    }
+    .bubble_collection {
+        display: none;
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        background: inherit;
+        align-items: center;
+        justify-content: center;
+        z-index: 1;
+        column-gap: 4px;
+        .dot {
+            display: flex;
+            height: 100%;
+            width: 20px;
+            z-index: 2;
+            align-items: center;
+            justify-content: center;
+            span {
+                display: flex;
+                height: 14px;
+                width: 14px;
+                background: white;
+                z-index: 2;
+                border-radius: 50%;
+            }
+            &:nth-child(1) > span {
+                height: 10px;
+                width: 10px;
+                animation: animate-first-dot 1.2s ease-in-out infinite;
+            }
+            &:nth-child(2) > span {
+                height: 10px;
+                width: 10px;
+                animation: animate-second-dot 1.4s ease-in-out infinite;
+            }
+            &:nth-child(3) > span {
+                height: 10px;
+                width: 10px;
+                animation: animate-third-dot 1.6s ease-in-out infinite;
+            }
+        }
+    }
+    &.isLoading {
+        .bubble_collection {
+            display: flex;
+        }
+    }
+}
+
+@keyframes animate-first-dot {
+  0% {
+    height: 14px;
+    width: 14px;
+  }
+  50% {
+    height: 10px;
+    width: 10px;
+  }
+  100% {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+@keyframes animate-second-dot {
+  0% {
+    height: 14px;
+    width: 14px;
+  }
+  50% {
+    height: 10px;
+    width: 10px;
+  }
+  100% {
+    height: 14px;
+    width: 14px;
+  }
+}
+
+@keyframes animate-third-dot {
+  0% {
+    height: 14px;
+    width: 14px;
+  }
+  50% {
+    height: 10px;
+    width: 10px;
+  }
+  100% {
+    height: 14px;
+    width: 14px;
+  }
+}

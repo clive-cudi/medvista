@@ -1,0 +1,29 @@
+* {
+  margin: 0%;
+  padding: 0%;
+  box-sizing: border-box;
+}
+
+:root {
+  --background-primary: rgb(235, 236, 236);
+  --background-color-light: white;
+  --background-color-dark: black;
+  --black-gradient: linear-gradient(to left, black, rgba(0,0,0,0.7));
+  --blue-gradient: linear-gradient(to right, rgb(116, 181, 235), rgb(61, 84, 178));
+  --green-gradient: linear-gradient(to left, #0fa34b, rgba(15, 163, 75, 0.7));
+  --purple-gradient: linear-gradient(to right, rgb(192, 108, 233), rgb(103, 59, 179));
+  --pink-gradient: linear-gradient(to right, rgb(231, 112, 226), rgb(173, 45, 105));
+  --teal-gradient: linear-gradient(to right, rgb(142, 228, 224), rgb(54, 140, 161));
+  --default-box-shadow: 1px 1px 20px 1px rgb(217, 217, 217);
+  --default-border: 1px solid rgb(210, 210, 210);
+  --default-border-hover: 1px solid rgb(137, 137, 137);
+  --blue-accent-color: #2d75bc;
+}
+
+@import "./fonts.scss";
+
+@media (prefers-color-scheme: dark) {
+  html {
+    color-scheme: dark;
+  }
+}

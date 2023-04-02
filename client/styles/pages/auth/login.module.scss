@@ -1,0 +1,16 @@
+.login_page {
+    > div[data-elm-type = "page_content"] {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .login_page_logo {
+            display: flex;
+            height: 100px;
+            width: 300px;
+            position: relative;
+            img {
+                object-fit: contain;
+            }
+        }
+    }
+}
