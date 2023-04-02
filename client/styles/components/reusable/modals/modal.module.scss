@@ -1,0 +1,29 @@
+.modal_main_wrapper {
+    display: flex;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(61, 53, 52, 0.327);
+    overflow-y: scroll;
+    .modal_content {
+      display: flex;
+      height: fit-content;
+      width: fit-content;
+      &.modal_out {
+        display: none;
+        animation: animate-modal-out 0.2s linear forwards;
+      }
+    }
+  }
+  @keyframes animate-modal-out {
+    0% {
+      transform: scale(1);
+    }
+    100% {
+      transform: scale(0.4);
+      display: none;
+    }
+  }
+  

@@ -20,6 +20,28 @@
   --blue-accent-color: #2d75bc;
 }
 
+.app {
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.content {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: auto;
+  scrollbar-width: 0px;
+  // max-width: 1600px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+  }
+}
+
 @import "./fonts.scss";
 
 @media (prefers-color-scheme: dark) {

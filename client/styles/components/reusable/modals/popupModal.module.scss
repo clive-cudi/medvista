@@ -1,0 +1,160 @@
+.err_wrapper {
+    display: flex;
+    height: fit-content;
+    width: 400px;
+    min-height: 200px;
+    max-width: 320px;
+    background-color: white;
+    border-radius: 6px;
+    padding: 10px;
+    align-items: center;
+    justify-content: space-between;
+    animation: animate-fade-in 0.2s linear forwards;
+    flex-direction: column;
+    position: relative;
+    .err_icon {
+      display: flex;
+      height: fit-content;
+      min-height: 60px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+      &.err_icon_error {
+        animation: animate-err-icon-shake_error 1s linear infinite;
+      }
+      &.err_icon_info {
+        animation: animate-err-icon-shake_error 1s linear infinite;
+      }
+      &.err_icon_success {
+        animation: animate-err-icon-shake_success 1s linear infinite;
+      }
+    }
+    .err_info {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .err_info > h2 {
+      font-size: 20px;
+    }
+    .err_info > p {
+        display: flex;
+        height: fit-content;
+        min-height: 60px;
+      font-size: 14px;
+      font-weight: bold;
+      text-align: center;
+      width: 100%;
+      justify-content: center;
+      color: black;
+      font-family: 'Source Sans Pro', sans-serif;
+    }
+    .err_btns {
+      display: flex;
+      height: 40px;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+    }
+    .err_btns > .err_btns_button {
+      display: flex;
+      height: 40px;
+      width: fit-content;
+      padding: 10px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      border: none;
+        //   background: rgb(138, 196, 243);
+        background: rgb(78, 99, 182);
+      color: white;
+      transition-timing-function: cubic-bezier(0.075, 0.82, 0.165, 1);
+      transition-duration: 0.4s;
+    }
+    .err_btns >.err_btns_button:hover {
+      background: rgb(81, 132, 174);
+      cursor: pointer;
+      color: white;
+    }
+  }
+  
+@keyframes animate-fade-in {
+  0% {
+    opacity: 0.5;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes animate-err-icon-shake_error {
+  0%
+  {
+    transform: rotate(0deg) scale(1);
+  }
+  10%
+  {
+    transform: rotate(20deg);
+  }
+  20%
+  {
+    transform: rotate(0deg);
+  }
+  30%
+  {
+    transform: rotate(-20deg);
+  }
+  40%
+  {
+    transform: rotate(0deg);
+  }
+  50%
+  {
+    transform: scale(1.1);
+  }
+  100%
+  {
+    transform: scale(1);
+  }
+}
+
+@keyframes animate-err-icon-shake_info {
+  0%
+  {
+    transform: scale(1);
+  }
+  70%
+  {
+    transform: scale(1.2);
+  }
+  100%
+  {
+    transform: scale(1);
+  }
+}
+
+@keyframes animate-err-icon-shake_success {
+  0%
+  {
+    transform: scale(1);
+    margin-top: 0px;
+  }
+  40%
+  {
+    margin-top: 4px;
+  }
+  50%
+  {
+    transform: scale(1.1);
+  }
+  100%
+  {
+    transform: scale(1);
+    margin-top: 0px;
+  }
+}

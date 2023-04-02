@@ -36,6 +36,9 @@ export const FormWrapper = ({ form, children, title, variant, enableSocials }: F
                         </div>
                         {loginProviders.map((provider) => provider.triggerElm)}
                         <div className={styles.forgot_link}>
+                            <Link href={"/auth/signup"}>No Account? Signup</Link>
+                        </div>
+                        <div className={styles.forgot_link}>
                             <Link href={"#"}>Forgot Password?</Link>
                         </div>
                     </div>
@@ -46,7 +49,9 @@ export const FormWrapper = ({ form, children, title, variant, enableSocials }: F
                         <div className={styles.strike_or}>
                             <span>or</span>
                         </div>
-                        
+                        <div className={styles.forgot_link}>
+                            <Link href={"/auth/login"}>Already have an account? Login</Link>
+                        </div>
                     </div>
                 )
             default:

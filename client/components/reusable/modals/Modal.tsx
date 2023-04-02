@@ -1,5 +1,5 @@
 import React,{ useEffect } from "react";
-import styles from "../../../styles/components/reusable/modals/modal.module.scss";
+import styles from "@/styles/components/reusable/modals/modal.module.scss";
 import { useModal, useContextMenu } from "@/hooks";
 
 interface modalPropTypes {

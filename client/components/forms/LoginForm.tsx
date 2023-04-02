@@ -1,8 +1,9 @@
 import styles from "@styles/components/forms/loginForm.module.scss";
-import { InputDiv, RegularBtn, PasswordInput } from "../reusable";
+import { InputDiv, RegularBtn, PasswordInput, PopupModal } from "../reusable";
 import { MdOutlineMail } from "react-icons/md";
 import React, { useState } from "react";
 import { checkFormInputs } from "@/utils";
+import { useModal } from "@/hooks";
 
 export const LoginForm = (): JSX.Element => {
     const [loginData, setLoginData] = useState<{
@@ -12,6 +13,7 @@ export const LoginForm = (): JSX.Element => {
         email: "",
         password: ""
     });
+    const { openModal } = useModal();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
@@ -32,6 +34,7 @@ export const LoginForm = (): JSX.Element => {
             console.log("Submitting");
         } else {
             console.log("Input Error!!");
+            openModal(<PopupModal message="Please fill in all fields"/>)
         }
     }
 
