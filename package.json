@@ -1,0 +1,15 @@
+{
+  "name": "medvista",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "client": "cd ./client && npm run dev",
+    "server": "cd ./server && npm run server",
+    "server:dev": "cd ./server && npm run server:dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
