@@ -13,7 +13,8 @@ interface signupFormData_types {
     id: string,
     email: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
+    usertype: "doctor" | "patient"
 }
 
 export const SignupForm = (): JSX.Element => {
@@ -22,7 +23,8 @@ export const SignupForm = (): JSX.Element => {
         id: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        usertype: "patient"
     });
     const { openModal } = useModal();
 
