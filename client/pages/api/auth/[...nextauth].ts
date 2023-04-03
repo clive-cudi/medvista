@@ -41,7 +41,7 @@ export default NextAuth({
                 }
 
                 if (login_response.data.success === false) {
-                    console.log(login_response.data.error.debug);
+                    console.log(login_response.data.error);
                     throw new Error(JSON.stringify({...login_response.data?.error, message: login_response.data.message}))
                 }
 

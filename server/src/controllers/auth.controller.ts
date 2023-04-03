@@ -30,7 +30,7 @@ const register = (req: Request, res: Response) => {
     }
 
     if (password !== confirmPassword) {
-        return res.status(403).json({
+        return res.status(200).json({
           success: false,
           message: "Passwords do not match",
           usertoken: {
@@ -49,7 +49,7 @@ const register = (req: Request, res: Response) => {
     // if user does not exist, create user
     User.findOne({$or: [{id: id}, {email: email}]}).then(async (user) => {
       if (user) {
-        return res.status(409).json({
+        return res.status(200).json({
           success: false,
           message: "User already exists",
           usertoken: {

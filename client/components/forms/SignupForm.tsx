@@ -7,6 +7,9 @@ import { AiOutlineUser } from "react-icons/ai";
 import { HiOutlineIdentification } from "react-icons/hi";
 import { EMAIL_REGEX, PASSWORD_REGEX, FULLNAME_SPACED_REGEX, ALL_INTEGERS_REGEX } from "@/utils";
 import { useModal } from "@/hooks";
+import axios from "axios";
+import { API_res_model } from "@/types";
+import { useRouter } from "next/router";
 
 interface signupFormData_types {
     name: string,
@@ -27,6 +30,7 @@ export const SignupForm = (): JSX.Element => {
         usertype: "patient"
     });
     const { openModal } = useModal();
+    const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
@@ -52,6 +56,23 @@ export const SignupForm = (): JSX.Element => {
                         // passwords match
                         if (PASSWORD_REGEX.test(signupData.password)) {
                             // password format valid
+                            axios.post<API_res_model>(`${process.env.BACKEND_URL}/auth/register`, {
+                                ...signupData
+                            }).then((res)=> {
+                                console.log(res);
+                                if (res.data.success) {
+                                    // success
+                                    openModal(<PopupModal message={res.data.message} btn_label={"Proceed"} type={"success"} />)
+                                    // redirect to email verification page
+                                    router.push(`/auth/verify-email?email=${signupData.email}`);
+                                } else {
+                                    // error
+                                    openModal(<PopupModal message={res.data.message} />)
+                                }
+                            }).catch((signup_err) => {
+                                console.log(signup_err);
+                                openModal(<PopupModal message={"An error occurred while trying to register. Please try again later."} />)
+                            })
                             return true;
                         } else {
                             openModal(<PopupModal message={"Password should contain at least one number and one special character with a minimum of six characters"} />)
