@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./build && tsc",
+    "build": "./check_rimraf.sh && rimraf ./build && tsc",
     "server": "npm run build && node ./build/index.js",
     "server:dev": "nodemon",
     "swagger": "ts-node ./swagger.ts"
