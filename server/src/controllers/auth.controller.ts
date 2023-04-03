@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import { createTransport } from "nodemailer";
+import { sendEmail, validateEmail } from "../helpers";
+import { Token } from "../models/token.model";
 
 interface registerCredentials {
     name: string;
@@ -226,8 +229,163 @@ const login = (req: Request, res: Response) => {
         debug: user_find_err,
       },
     });
-  })
-
+  });
 }
 
-export { register, login };
+const confirmEmail = (req: Request, res: Response) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing credentials",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "missing_credentials",
+      },
+    });
+  }
+
+  if (!validateEmail(email)) {
+    return res.status(200).json({
+      success: false,
+      message: "Invalid email",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "invalid_email",
+      },
+    });
+  }
+
+  // check if email exists
+  User.findOne({email: email}).then(async (user) => {
+    if (user) {
+      // send verification email
+      try {
+        const token = jwt.sign(
+          {
+            id: user.id,
+            email: `${user.email}`,
+            name: `${user.name}`,
+            usertype: `${user.usertype}`
+          },
+          process.env.JWT_TOKEN_KEY ?? "jfs29jfsoi4-jdwiehfri",
+          {
+            expiresIn: "2h"
+          }
+        );
+  
+        const mailOptions = {
+          from: `${process.env.SENDER_EMAIL}`,
+          to: email,
+          subject: "Verify your email",
+          html: `
+          <h2>Verify your email</h2>
+          <p>Click on the link below to verify your email</p>
+          <a href="${process.env.CLIENT_URL}/auth/verify-email/${token}">Verify Email</a>
+          `,
+        };
+  
+        const DB_token = await new Token({
+          _userId: user.id,
+          token: token
+        }).save();
+  
+        sendEmail(mailOptions.to, mailOptions.subject, mailOptions.html).then((email_sent) => {
+          if (email_sent) {
+            return res.status(200).json({
+              success: true,
+              message: "Verification email sent",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: false,
+                code: null,
+              },
+            });
+          } else {
+            return res.status(200).json({
+              success: false,
+              message: "An error occurred while sending email",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: true,
+                code: "email_error",
+              },
+            });
+          }
+        }).catch((email_err) => {
+          return res.status(200).json({
+            success: false,
+            message: "An error occurred while sending email",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "email_error",
+              debug: email_err,
+            },
+          });
+        });
+      } catch(e) {
+        return res.status(200).json({
+          success: false,
+          message: "An error occurred while sending email",
+          usertoken: {
+            user: null,
+            token: null,
+          },
+          error: {
+            status: true,
+            code: "email_error",
+            debug: e,
+          },
+        });
+      }
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "User not found",
+        usertoken: {
+          user: null,
+          token: null,
+        },
+        error: {
+          status: true,
+          code: "user_not_found",
+        },
+      });
+    }
+  }).catch((user_find_err) => {
+    return res.status(200).json({
+      success: false,
+      message: "An error occurred",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "db_error",
+        debug: user_find_err,
+      },
+    });
+  });
+}
+
+export { register, login, confirmEmail };

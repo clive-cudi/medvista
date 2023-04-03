@@ -25,7 +25,11 @@ const userSchema = new Schema({
         required: true
     },
     doctor: doctorSchema,
-    patient: patientSchema
+    patient: patientSchema,
+    isVerified: {
+        type: Boolean,
+        default: false
+    }
 }, {
     timestamps: true
 });
