@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import { doctorSchema } from "./doctor.model";
+import { patientSchema } from "./patient.model";
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
@@ -21,7 +23,9 @@ const userSchema = new Schema({
     usertype: {
         type: String,
         required: true
-    }
+    },
+    doctor: doctorSchema,
+    patient: patientSchema
 }, {
     timestamps: true
 });

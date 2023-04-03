@@ -1,9 +1,10 @@
 import { Router } from "express";
 const router = Router();
+import { register, login } from "../controllers/auth.controller";
 
-router.post("/register");
+router.post("/register", register);
 
-router.post("/login");
+router.post("/login", login);
 
 router.post("/verify-details");
 

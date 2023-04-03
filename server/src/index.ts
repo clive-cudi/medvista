@@ -18,6 +18,14 @@ app.use(express.json());
 
 app.use(logger("dev"));
 
+
+mongoose.connect(MONGO_URI ?? "").then(() => {
+    console.log("[INFO] Connected to DB");
+}).catch((mongo_connect_err) => {
+    console.log(mongo_connect_err);
+    console.log("[ERROR] Failed to connect to DB");
+})
+
 app.get("/", (req, res) => {
     return res.status(200).send("Welcome to medVista API!");
 });
