@@ -4,7 +4,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 
 interface RegularBtn_Props extends ButtonHTMLAttributes<HTMLButtonElement> {
     label?: string
-    variant?: "text" | "contained" | "outlined" | "gradient"
+    variant?: "text" | "contained" | "outlined" | "gradient" | "nav"
     withIcon?: {
         status: boolean,
         icon: JSX.Element | React.ReactNode

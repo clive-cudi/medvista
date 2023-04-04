@@ -24,7 +24,6 @@ export default NextAuth({
             },
             async authorize(credentials) {
                 // handle login
-                console.log(credentials);
                 
                 const login_response: AxiosResponse<API_res_model> = await axios.post(`${process.env.BACKEND_URL}/auth/login`, {...credentials});
 
@@ -52,7 +51,6 @@ export default NextAuth({
     callbacks: {
         async jwt({token, user}) {
             if (user) {
-                console.log(user);
                 token = {
                     ...token,
                     name: user.user.name,

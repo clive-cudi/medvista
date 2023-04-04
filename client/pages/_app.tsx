@@ -1,6 +1,6 @@
 import '@/styles/globals.scss';
 import type { AppProps } from 'next/app';
-import { ModalCtxProvider, ContextMenuCtxProvider } from '@/providers';
+import { ModalCtxProvider, ContextMenuCtxProvider, TabCtxProvider } from '@/providers';
 import { AuthGuard } from '@/components';
 import { NextComponentType } from 'next';
 import { PageAuth } from '@/types';
@@ -19,13 +19,15 @@ export default function App({ Component, pageProps: {session, ...pageProps} }: M
     <SessionProvider session={session}>
       <ModalCtxProvider>
         <ContextMenuCtxProvider>
-          {Component.requireAuth ? (
-            <AuthGuard usertype={Component.requireAuth.userType}>
+          <TabCtxProvider>
+            {Component.requireAuth ? (
+              <AuthGuard usertype={Component.requireAuth.userType}>
+                <Component {...pageProps} />
+              </AuthGuard>
+            ): (
               <Component {...pageProps} />
-            </AuthGuard>
-          ): (
-            <Component {...pageProps} />
-          )}
+            )}
+          </TabCtxProvider>
         </ContextMenuCtxProvider>
       </ModalCtxProvider>
      </SessionProvider>
