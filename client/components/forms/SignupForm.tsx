@@ -94,7 +94,7 @@ export const SignupForm = (): JSX.Element => {
         return false;
     }
 
-    function submitLogin(): void {
+    function submitRegister(): void {
         if (checkFormInputs({data: signupData, exclude: []})) {
             console.log(signupData);
             console.log("Submitting");
@@ -115,7 +115,7 @@ export const SignupForm = (): JSX.Element => {
             <InputDiv type={`text`} placeholder={`Enter Email`} icon={<MdOutlineMail />} inputArgs={{name: "email"}} onChange={handleChange} />
             <PasswordInput placeholder={"Enter Password"} inputArgs={{name: "password"}} onChange={handleChange} />
             <PasswordInput placeholder={"Confirm Password"} inputArgs={{name: "confirmPassword"}} onChange={handleChange} />
-            <RegularBtn type="submit" onClick={submitLogin}>Register</RegularBtn>
+            <RegularBtn type="submit" onClick={submitRegister}>Register</RegularBtn>
         </form>
     )
 }

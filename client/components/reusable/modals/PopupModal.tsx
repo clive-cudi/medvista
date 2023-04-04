@@ -16,9 +16,10 @@ interface ErrorModalPropTypes {
     btn_onclick?: ()=> void
     disable_close_btn?: boolean
     type?: "error" | "info" | "success"
+    show_btn?: boolean
 }
 
-export function PopupModal({type = "error", message, redirectUrl, icon, title, btn_label, btn_onclick, disable_close_btn}: ErrorModalPropTypes): JSX.Element{
+export function PopupModal({type = "error", message, redirectUrl, icon, title, btn_label, btn_onclick, disable_close_btn, show_btn = true}: ErrorModalPropTypes): JSX.Element{
     const { closeModal } = useModal();
     const router = useRouter();
 
@@ -55,13 +56,17 @@ export function PopupModal({type = "error", message, redirectUrl, icon, title, b
                         }
                         btn_onclick && btn_onclick()
                     }}>{btn_label ? btn_label : `Ok, Try Again`}</button> */}
-                    <RegularBtn label={btn_label ? btn_label : `Ok, Try Again`} onClick={() => {
-                        redirectUrl && redirect(redirectUrl);
-                        if (disable_close_btn !== true){
-                            closeModal()
-                        }
-                        btn_onclick && btn_onclick()
-                    }} variant={"outlined"} className={styles.err_btns_button} />
+                    {
+                        show_btn ?
+                            <RegularBtn label={btn_label ? btn_label : `Ok, Try Again`} onClick={() => {
+                                redirectUrl && redirect(redirectUrl);
+                                if (disable_close_btn !== true){
+                                    closeModal()
+                                }
+                                btn_onclick && btn_onclick()
+                            }} variant={"outlined"} className={styles.err_btns_button} />
+                        : null
+                    }
                 </div>
             </div>
         </div>

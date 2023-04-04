@@ -1,0 +1,38 @@
+.confirm_email_page {
+    > div[data-elm-type = "page_content"] {
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        .confirm_email_page_logo {
+            display: flex;
+            height: 100px;
+            width: 300px;
+            position: relative;
+            img {
+                object-fit: contain;
+            }
+        }
+        > h1 {
+            font-size: 26px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            padding: 10px 0px 10px 0px;
+        }
+        > p {
+            color: rgb(79, 79, 79);
+            font-size: 14px;
+            font-weight: 400;
+            font-family: 'Inter', sans-serif;
+            padding: 10px 0px 10px 0px;
+        }
+        .resend_email_form {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            width: fit-content;
+            padding: 10px;
+            row-gap: 10px;
+            align-items: center;
+        }
+    }
+}

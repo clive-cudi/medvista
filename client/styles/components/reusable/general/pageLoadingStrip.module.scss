@@ -1,0 +1,29 @@
+.pls_wrapper {
+    display: flex;
+    position: absolute;
+    height: 3px;
+    width: 100%;
+    background: #2563eb;
+    top: 0%;
+    left: 0%;
+    z-index: 200;
+    animation: animate-pls 1s linear infinite;
+    // transform: scaleX(0.5);
+}
+
+@keyframes animate-pls {
+    0% {
+        left: -100%;
+        transform: scaleX(1);
+    }
+    30% {
+        transform: scaleX(0.5);
+    }
+    60% {
+        transform: scaleX(0.7);
+    }
+    100% {
+        left: 100%;
+        transform: scaleX(1);
+    }
+}

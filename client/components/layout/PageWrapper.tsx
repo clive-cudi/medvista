@@ -1,7 +1,7 @@
 import React, { DetailedHTMLProps, HTMLAttributes } from "react";
 import styles from "@styles/components/layout/pageWrapper.module.scss";
-import { Header, Header_props, Modal } from "../reusable";
-import { useModal, useContextMenu } from "@/hooks";
+import { Header, Header_props, Modal, PageLoadingStrip } from "../reusable";
+import { useModal, useContextMenu, usePageLoading } from "@/hooks";
 import { ContextMenuWrapper } from "./ContextMenuWrapper";
 
 interface PageWrapper_Props
@@ -17,6 +17,7 @@ export const PageWrapper = ({
 }: PageWrapper_Props): JSX.Element => {
   const { modal } = useModal();
   const { ctxMenu } = useContextMenu();
+  const { isPageLoading } = usePageLoading();
 
   return (
   <main
@@ -24,6 +25,7 @@ export const PageWrapper = ({
     data-elm-type={"page_container"}
     {...other}
   >
+    {isPageLoading === true ? <PageLoadingStrip /> : null}
     <div
       className={`content ${styles.page_container_content}`}
       data-elm-type={"page_content"}

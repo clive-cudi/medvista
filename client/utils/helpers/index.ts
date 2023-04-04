@@ -1,3 +1,5 @@
+import { EMAIL_REGEX } from "./regex";
+
 interface checkFormInputs_Props<T, K> {
     data: T;
     exclude: K[];
@@ -22,6 +24,12 @@ interface checkFormInputs_Props<T, K> {
       return false;
     }
   }
+
+export const validateEmail = (email: string) => {
+  return email.match(
+      EMAIL_REGEX
+  );
+};
   
   // console.log(checkFormInputs({data: {cool: true, wow: "hello"}, exclude: ["cool"]}))
 
