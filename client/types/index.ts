@@ -42,3 +42,6 @@ export interface PageAuth {
         }
     }
 }
+
+export type doctorTabs = "dashboard" | "myPatients" | "settings";
+export type patientTabs = "dashboard" | "myDoctors" | "myRecords" | "settings";

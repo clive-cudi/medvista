@@ -3,5 +3,6 @@ export * from "./modals";
 export * from "./buttons";
 export * from "./inputs";
 export * from "./general";
+export * from "./nav";
 
 export type { Header_props } from "./Header";

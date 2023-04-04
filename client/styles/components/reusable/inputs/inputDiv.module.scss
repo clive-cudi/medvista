@@ -40,6 +40,26 @@
         justify-content: center;
         cursor: pointer;
     }
+    &.input_select {
+        padding: 10px;
+    }
+    select {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        border: none;
+        background: none;
+        outline: none;
+    }
+    .input_select_icon {
+        span[data-elm-type = "input-icon-label"] {
+            font-size: 14px;
+            padding: 0px 8px 0px 0px;
+            height: 100%;
+            color: gray;
+            font-family: "Inter", sans-serif;
+        }
+    }
     &:hover {
         border: var(--default-border-hover);
         span[data-elm-type = "input-icon"] {

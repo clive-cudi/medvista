@@ -1,5 +1,5 @@
 import styles from "@styles/components/forms/loginForm.module.scss";
-import { InputDiv, RegularBtn, PasswordInput, PopupModal } from "../reusable";
+import { InputDiv, RegularBtn, PasswordInput, PopupModal, InputSelect} from "../reusable";
 import { MdOutlineMail } from "react-icons/md";
 import React, { useState } from "react";
 import { checkFormInputs } from "@/utils";
@@ -32,10 +32,12 @@ export const SignupForm = (): JSX.Element => {
     const { openModal } = useModal();
     const router = useRouter();
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
         const value = e.target.value;
 
         const name = e.target.name;
+
+        console.log(name, value);
 
         setSignupData((prevSignupData) => {
             return {
@@ -113,6 +115,7 @@ export const SignupForm = (): JSX.Element => {
             <InputDiv type={`text`} placeholder={"Enter First and Last Name"} icon={<AiOutlineUser />} inputArgs={{name: "name"}} onChange={handleChange} />
             <InputDiv type={`number`} placeholder={"Enter ID no."} icon={<HiOutlineIdentification />} inputArgs={{name: "id"}} onChange={handleChange} />
             <InputDiv type={`text`} placeholder={`Enter Email`} icon={<MdOutlineMail />} inputArgs={{name: "email"}} onChange={handleChange} />
+            <InputSelect name={"usertype"} onChange={handleChange} options={[{value: "patient", label: "Patient"}, {value: "doctor", label: "Doctor"}]} withIcon={{status: true, icon: <span data-elm-type={"input-icon-label"}>Role:</span>}} />
             <PasswordInput placeholder={"Enter Password"} inputArgs={{name: "password"}} onChange={handleChange} />
             <PasswordInput placeholder={"Confirm Password"} inputArgs={{name: "confirmPassword"}} onChange={handleChange} />
             <RegularBtn type="submit" onClick={submitRegister}>Register</RegularBtn>

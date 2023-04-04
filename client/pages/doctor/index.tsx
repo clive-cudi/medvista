@@ -1,17 +1,16 @@
-import { Header, PageWrapper, RegularBtn } from "@/components";
+import { DoctorPageCurrentTab, Header, PageWrapper, RegularBtn, SideNav } from "@/components";
 import { signOut } from "next-auth/react";
+import styles from "@styles/pages/doctor/doctorHomePage.module.scss"
 
 export default function DoctorHomePage() {
     return (
         <>
             <Header title={"Medvista | Doctor Dashboard"}></Header>
             <PageWrapper>
-                <h1>Doctor Home Page</h1>
-                <RegularBtn onClick={() => {
-                    signOut({
-                        callbackUrl: "/"
-                    });
-                }} >Signout</RegularBtn>
+                <SideNav />
+                <div className={styles.content_view}>
+                    <DoctorPageCurrentTab />
+                </div>
             </PageWrapper>
         </>
     )
