@@ -29,7 +29,8 @@ export default function VerifyEmail() {
             }).then((res) => {
                 if (res.data.success === true) {
                     setCurrentVerificationStatus("success");
-                    openModal(<PopupModal type={"success"} title={"Email Verified"} message={"Email Verification successful!"} />)
+                    openModal(<PopupModal type={"success"} title={"Email Verified"} message={"Email Verification successful!"} btn_label={"Go to Login"} />)
+                    router.push("/auth/login");
                 } else {
                     setCurrentVerificationStatus("error");
                     openModal(<PopupModal type={"error"} title={"Email Verification Failed"} message={res.data.message} />)
