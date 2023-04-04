@@ -1,7 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 const Schema = mongoose.Schema;
 
-const doctorSchema = new Schema({
+export interface Doctor extends mongoose.Document {
+    id: string;
+    name: string;
+    patients: string[];
+}
+
+const doctorSchema = new Schema<Doctor, Model<Doctor>, Doctor>({
     name: {
         type: String,
         required: true

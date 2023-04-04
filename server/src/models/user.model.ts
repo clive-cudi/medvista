@@ -1,9 +1,20 @@
-import mongoose from "mongoose";
-import { doctorSchema } from "./doctor.model";
-import { patientSchema } from "./patient.model";
+import mongoose, { Model } from "mongoose";
+import { doctorSchema, Doctor } from "./doctor.model";
+import { patientSchema, Patient } from "./patient.model";
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+export interface User {
+    name: string;
+    id: string;
+    email: string;
+    password: string;
+    usertype: string;
+    doctor: Doctor;
+    patient: Patient;
+    isVerified: boolean;
+}
+
+const userSchema = new Schema<User, Model<User>, User>({
     name: {
         type: String,
         required: true

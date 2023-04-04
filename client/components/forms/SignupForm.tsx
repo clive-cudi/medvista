@@ -64,7 +64,7 @@ export const SignupForm = (): JSX.Element => {
                                     // success
                                     openModal(<PopupModal message={res.data.message} btn_label={"Proceed"} type={"success"} />)
                                     // redirect to email verification page
-                                    router.push(`/auth/verify-email?email=${signupData.email}`);
+                                    router.push(`/auth/confirm-email?email=${signupData.email}`);
                                 } else {
                                     // error
                                     openModal(<PopupModal message={res.data.message} />)

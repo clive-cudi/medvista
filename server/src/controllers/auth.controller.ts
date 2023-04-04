@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import { createTransport } from "nodemailer";
 import { sendEmail, validateEmail } from "../helpers";
 import { Token } from "../models/token.model";
+import { Document } from "mongoose";
 
 interface registerCredentials {
     name: string;
@@ -265,6 +266,8 @@ const confirmEmail = (req: Request, res: Response) => {
     });
   }
 
+  console.log(email);
+
   // check if email exists
   User.findOne({email: email}).then(async (user) => {
     if (user) {
@@ -295,7 +298,7 @@ const confirmEmail = (req: Request, res: Response) => {
         };
   
         const DB_token = await new Token({
-          _userId: user.id,
+          userId: user.id,
           token: token
         }).save();
   

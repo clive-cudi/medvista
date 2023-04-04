@@ -5,6 +5,8 @@ import React, { useState } from "react";
 import { checkFormInputs } from "@/utils";
 import { useModal } from "@/hooks";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/router";
+import { getSession } from "next-auth/react";
 
 export const LoginForm = (): JSX.Element => {
     const [loginData, setLoginData] = useState<{
@@ -15,6 +17,7 @@ export const LoginForm = (): JSX.Element => {
         password: ""
     });
     const { openModal } = useModal();
+    const router = useRouter();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
@@ -37,10 +40,21 @@ export const LoginForm = (): JSX.Element => {
                 id: loginData.id,
                 password: loginData.password,
                 redirect: false
-            }).then((res) => {
+            }).then(async (res) => {
                 console.log(res);
                 if (res?.error) {
-                    openModal(<PopupModal message={JSON.parse(res.error).message ?? "Invalid ID or Password"} />)
+                    openModal(<PopupModal message={JSON.parse(res.error).message ?? "Invalid ID or Password"} />);
+                    return;
+                }
+
+                const session = await getSession();
+
+                if (session?.user.usertype === "doctor") {
+                    router.push("/doctor");
+                } else if (session?.user.usertype === "patient") {
+                    router.push("/patient");
+                } else {
+                    router.push("/");
                 }
             }).catch((err) => {
                 console.log(err);

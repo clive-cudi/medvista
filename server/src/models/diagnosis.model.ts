@@ -1,7 +1,17 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
 const Schema = mongoose.Schema;
 
-const diagnosisSchema = new Schema({
+export interface Diagnosis {
+    diagnosisId: string;
+    patient: string;
+    doctor: string;
+    date: Date;
+    symptoms: string;
+    diagnosis: string;
+    treatment: string;
+}
+
+const diagnosisSchema = new Schema<Diagnosis, Model<Diagnosis>, Diagnosis>({
     diagnosisId: {
         type: String,
         required: true

@@ -1,6 +1,7 @@
 import { FormWrapper, Header, PageWrapper, LoginForm } from "@/components";
 import styles from "@/styles/pages/auth/login.module.scss";
 import Image from "next/image";
+import { getSession } from "next-auth/react";
 
 export default function Login() {
     return (
@@ -14,4 +15,25 @@ export default function Login() {
             </PageWrapper>
         </>
     )
+}
+
+Login.getInitialProps = async (ctx: {req: any, res: any}) => {
+    const { req, res } = ctx;
+    const session = await getSession({ req });
+
+    if ((session)?.user && res) {
+        res.writeHead(302, {
+            Location: (session)?.user.userType === 'patient' ? '/patient' : '/doctor',
+        });
+
+        res.end();
+
+        return {
+            props: {},
+        };
+    }
+
+    return {
+        props: {},
+    };
 }

@@ -29,3 +29,16 @@ export interface API_res_model {
         debug?: any
     }
 }
+
+export type userType_ = "doctor" | "patient"
+
+export interface PageAuth {
+    requireAuth: {
+        auth: boolean
+        userType: userType_
+        multipleUserTypes?: {
+            status: boolean
+            supported: userType_[]
+        }
+    }
+}
