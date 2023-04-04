@@ -6,6 +6,7 @@ import { createTransport } from "nodemailer";
 import { sendEmail, validateEmail } from "../helpers";
 import { Token } from "../models/token.model";
 import { Document } from "mongoose";
+import { JWTDecodedEmailVerificationToken } from "../types";
 
 interface registerCredentials {
     name: string;
@@ -389,6 +390,132 @@ const confirmEmail = (req: Request, res: Response) => {
       },
     });
   });
+};
+
+const verifyEmail = (req: Request, res: Response) => {
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing credentials",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "missing_credentials",
+      },
+    });
+  }
+
+  // decode token
+  const decoded_token = jwt.verify(token, (process.env.JWT_TOKEN_KEY ?? "jfs29jfsoi4-jdwiehfri")) as unknown as JWTDecodedEmailVerificationToken;
+
+  if (decoded_token) {
+    const { email, id, name, usertype } = decoded_token;
+
+    // check if token exists
+    Token.findOne({token: token}).then(async (token) => {
+      if (token?.userId === id) {
+        // token is valid
+        // check if user exists
+        User.findOneAndUpdate({email: email, id: id}, {$set: {isVerified: true}}).then(async (user) => {
+          if (user) {
+            // user exists
+            // delete token
+            Token.findOneAndDelete({userId: id}).then((token_deleted) => {
+              // return response
+              return res.status(200).json({
+                success: true,
+                message: "Email verified",
+                usertoken: {
+                  user: user,
+                  token: null,
+                },
+                error: {
+                  status: false,
+                  code: null,
+                },
+              });
+            }).catch((token_delete_err) => {
+              return res.status(200).json({
+                success: false,
+                message: "An error occurred",
+                usertoken: {
+                  user: null,
+                  token: null,
+                },
+                error: {
+                  status: true,
+                  code: "db_error",
+                  debug: token_delete_err,
+                },
+              });
+            });
+          } else {
+            // user does not exist
+            return res.status(200).json({
+              success: false,
+              message: "User not found",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: true,
+                code: "user_not_found",
+              },
+            });
+          }
+        }).catch((user_find_err) => {
+          return res.status(200).json({
+            success: false,
+            message: "An error occurred",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "db_error",
+              debug: user_find_err,
+            },
+          });
+        });
+      } else {
+        // token is invalid
+        return res.status(200).json({
+          success: false,
+          message: "Invalid token",
+          usertoken: {
+            user: null,
+            token: null,
+          },
+          error: {
+            status: true,
+            code: "invalid_token",
+          },
+        });
+      }
+    }).catch((token_find_err) => {
+      return res.status(200).json({
+        success: false,
+        message: "An error occurred",
+        usertoken: {
+          user: null,
+          token: null,
+        },
+        error: {
+          status: true,
+          code: "db_error",
+          debug: token_find_err,
+        },
+      });
+    });
+  }
+    
 }
 
-export { register, login, confirmEmail };
+export { register, login, confirmEmail, verifyEmail };
