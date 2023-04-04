@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
+import { User, UserType } from "../models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { createTransport } from "nodemailer";
@@ -172,7 +172,7 @@ const login = (req: Request, res: Response) => {
           }
         );
 
-        const { ...dataToInclude } = user;
+        const { ...dataToInclude } = user._doc;
         console.log(dataToInclude);
 
         return res.status(200).json({

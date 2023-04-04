@@ -3,7 +3,7 @@ import { doctorSchema, Doctor } from "./doctor.model";
 import { patientSchema, Patient } from "./patient.model";
 const Schema = mongoose.Schema;
 
-export interface User {
+export interface UserType {
     name: string;
     id: string;
     email: string;
@@ -12,9 +12,10 @@ export interface User {
     doctor: Doctor;
     patient: Patient;
     isVerified: boolean;
+    _doc: any;
 }
 
-const userSchema = new Schema<User, Model<User>, User>({
+const userSchema = new Schema<UserType, Model<UserType>, UserType>({
     name: {
         type: String,
         required: true

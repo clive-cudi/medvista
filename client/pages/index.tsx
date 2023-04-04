@@ -34,7 +34,7 @@ Home.getInitialProps = async (ctx: {req: any, res: any}) => {
   }
 
   return {
-    props: {},
+    props: {}
   };
 }
 
