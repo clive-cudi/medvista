@@ -41,6 +41,7 @@ export default function VerifyEmail() {
                 openModal(<PopupModal type={"error"} title={"Email Verification Failed"} message={"An error occured while verifying your email"} />)
             })
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [token]);
 
     function toggleShowEmailInput() {

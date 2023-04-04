@@ -19,6 +19,7 @@ export const AuthGuard = ({ usertype, children }: AuthGuardProps) => {
             // route to home page of the user's usertype
             router.push(`/${session.user.usertype}`);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [status]);
 
     if (status === 'loading') {

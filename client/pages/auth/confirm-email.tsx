@@ -34,7 +34,7 @@ export default function ConfirmEmail() {
                 </div>
                 <h1>Confirm Email</h1>
                 <p>Check your inbox at {email} for confirmation link</p>
-                {email && <p>Didn't get an email? <a href={`/auth/confirm-email?email=${email}`}>Resend confirmation email</a></p>}
+                {email && <p>Didn&apos;t get an email? <a href={`/auth/confirm-email?email=${email}`}>Resend confirmation email</a></p>}
             </PageWrapper>
         </>
     )
