@@ -40,6 +40,7 @@ const getMedicalHistory = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -53,6 +54,7 @@ const getMedicalHistory = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,

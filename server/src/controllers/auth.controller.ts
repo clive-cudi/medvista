@@ -164,7 +164,8 @@ const login = (req: Request, res: Response) => {
             id: user.id,
             email: `${user.email}`,
             name: `${user.name}`,
-            usertype: `${user.usertype}`
+            usertype: `${user.usertype}`,
+            token: ``
           },
           process.env.JWT_TOKEN_KEY ?? "jfs29jfsoi4-jdwiehfri",
           {
