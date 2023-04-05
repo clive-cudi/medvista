@@ -21,7 +21,7 @@ export const SideNav = ({ switchBtns, isMinNav }: SideNavProps) => {
     }
 
     return (
-        <nav className={styles.sideNav}>
+        <nav className={`${styles.sideNav} ${isMin ? styles._isMin : ""}`}>
             <div className={styles.sn_content}>
                 <div className={styles.sn_header}>
                     <div className={styles.sn_logo}>

@@ -14,17 +14,17 @@ export default function DoctorHomePage() {
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "dashboard"} onClick={() => {
                 switchTab("dashboard");
-            }} withIcon={{status: true, icon: <MdDashboard fontSize={20} />}}>Dashboard</SideNavBtn>
+            }} withIcon={{status: true, icon: <MdDashboard fontSize={20} />}}>{navMin ? "Dashboard" : null}</SideNavBtn>
         },
         {
-            btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "myDoctors"} onClick={() => {
-                switchTab("myDoctors");
-            }} withIcon={{status: true, icon: <FaHospitalUser fontSize={20} />}}>My Patients</SideNavBtn>
+            btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "myPatients"} onClick={() => {
+                switchTab("myPatients");
+            }} withIcon={{status: true, icon: <FaHospitalUser fontSize={20} />}}>{navMin ? "My Patients" : null}</SideNavBtn>
         },
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "settings"} onClick={() => {
                 switchTab("settings");
-            }} withIcon={{status: true, icon: <HiCog6Tooth fontSize={20} />}}>Settings</SideNavBtn>
+            }} withIcon={{status: true, icon: <HiCog6Tooth fontSize={20} />}}>{navMin ? "Settings" : null}</SideNavBtn>
         }
     ];
 

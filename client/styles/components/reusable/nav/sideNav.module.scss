@@ -8,6 +8,22 @@
     background-color: #fff;
     z-index: 1;
     padding: 10px 0px 10px 0px;
+    &._isMin {
+        min-width: 80px;
+        width: 80px;
+        .sn_content {
+            .sn_links {
+                ul {
+                    li {
+                        button {
+                            align-items: center;
+                            justify-content: center;
+                        }
+                    }
+                }
+            }
+        }
+    }
     .sn_content {
         display: flex;
         height: 100%;
