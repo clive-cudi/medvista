@@ -64,7 +64,6 @@ export default NextAuth({
             return token
         },
         async session({session, token, user}) {
-            console.log(token)
             Object.keys(token).forEach(key => {
                 session.user[key] = token[key];
             });

@@ -1,8 +1,9 @@
-import React, { DetailedHTMLProps, HTMLAttributes } from "react";
+import React, { DetailedHTMLProps, HTMLAttributes, useEffect } from "react";
 import styles from "@styles/components/layout/pageWrapper.module.scss";
 import { Header, Header_props, Modal, PageLoadingStrip } from "../reusable";
 import { useModal, useContextMenu, usePageLoading } from "@/hooks";
 import { ContextMenuWrapper } from "./ContextMenuWrapper";
+import { useSession } from "next-auth/react";
 
 interface PageWrapper_Props
   extends DetailedHTMLProps<HTMLAttributes<HTMLDivElement>, HTMLDivElement> {
@@ -18,6 +19,9 @@ export const PageWrapper = ({
   const { modal } = useModal();
   const { ctxMenu } = useContextMenu();
   const { isPageLoading } = usePageLoading();
+  const session = useSession();
+
+  useEffect(() => {console.log(session)}, [session])
 
   return (
   <main

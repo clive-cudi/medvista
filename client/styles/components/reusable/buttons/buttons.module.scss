@@ -123,6 +123,20 @@
           background: rgba(80, 48, 229, 0.08);
       }
   }
+  &.btn_navMin {
+    display: flex;
+    background: none;
+    border: none;
+    align-items: center;
+    justify-content: center;
+    background: var(--black-gradient);
+    font-size: 20px;
+    &:hover {
+      cursor: pointer;
+      background: #2d74bc59;
+      border-radius: 6px;
+    }
+  }
   span {
       display: flex;
       height: 100%;

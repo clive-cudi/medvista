@@ -15,6 +15,19 @@
         flex-direction: column;
         border-right: 1px solid #e0e0e0;
         padding: 0px 10px 0px 10px;
+        justify-content: space-between;
+        .sn_header {
+            display: flex;
+            height: fit-content;
+            flex-direction: column;
+            width: 100%;
+        }
+        .sn_logout {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            width: 100%;
+        }
         .sn_logo {
             display: flex;
             height: 60px;
@@ -48,6 +61,13 @@
                     justify-content: flex-start;
                 }
             }
+        }
+        .sn_minimize {
+            display: flex;
+            height: 50px;
+            width: 100%;
+            align-items: center;
+            justify-content: center;
         }
     }
 }

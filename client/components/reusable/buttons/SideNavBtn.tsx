@@ -8,7 +8,7 @@ interface SideNavBtn_Props extends DetailedHTMLProps<ButtonHTMLAttributes<HTMLBu
         icon: JSX.Element | React.ReactNode
     }
     className?: string
-    variant?: "primary" | "secondary"
+    variant?: "primary" | "secondary" | "navMin"
 }
 
 export const SideNavBtn = ({isActive, withIcon, className, variant, children, ...utilProps}: SideNavBtn_Props): JSX.Element => {
