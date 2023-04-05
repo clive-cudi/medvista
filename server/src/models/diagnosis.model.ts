@@ -9,6 +9,8 @@ export interface Diagnosis {
     symptoms: string;
     diagnosis: string;
     treatment: string;
+    isApproved: boolean;
+    isPendingDelete: boolean;
 }
 
 const diagnosisSchema = new Schema<Diagnosis, Model<Diagnosis>, Diagnosis>({
@@ -39,6 +41,14 @@ const diagnosisSchema = new Schema<Diagnosis, Model<Diagnosis>, Diagnosis>({
     treatment: {
         type: String,
         required: true
+    },
+    isApproved: {
+        type: Boolean,
+        default: false
+    },
+    isPendingDelete: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true,

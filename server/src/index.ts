@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 import logger from "morgan";
 import AuthRouter from "./routes/auth";
+import PatientRouter from "./routes/patient";
+import DoctorRouter from "./routes/doctor";
 
 
 dotenv.config({ path: path.resolve(__dirname, "../.env.local")})
@@ -33,7 +35,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/auth", AuthRouter);
-
+app.use("/patient", PatientRouter);
+app.use("/doctor", DoctorRouter);
 
 app.listen(PORT, () => {
     console.log(`Server up on PORT: ${PORT}`);
