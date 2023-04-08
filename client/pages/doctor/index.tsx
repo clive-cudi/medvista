@@ -1,4 +1,4 @@
-import React, { ReactNode } from "react";
+import React, { useState, ReactNode } from "react";
 import { DoctorPageCurrentTab, Header, PageWrapper, RegularBtn, SideNav, SideNavBtn } from "@/components";
 import styles from "@styles/pages/doctor/doctorHomepage.module.scss";
 import { useTabs } from "@/hooks/useTabs";
@@ -9,7 +9,7 @@ import { HiCog6Tooth } from "react-icons/hi2";
 
 export default function DoctorHomePage() {
     const { initialTab: currentTab, switchTab } = useTabs();
-    const [navMin, setNavMin] = React.useState(false);
+    const [navMin, setNavMin] = useState(false);
     const switchBtns: {btnComponent: JSX.Element | ReactNode}[] = [
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "dashboard"} onClick={() => {

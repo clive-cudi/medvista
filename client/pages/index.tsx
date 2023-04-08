@@ -13,8 +13,14 @@ export default function Home() {
       
     </PageWrapper>
     </>
+
   )
 }
+
+// M -> MongoDB 
+// E -> Express 
+// R -> React
+// N -> NodeJS
 
 
 Home.getInitialProps = async (ctx: {req: any, res: any}) => {
