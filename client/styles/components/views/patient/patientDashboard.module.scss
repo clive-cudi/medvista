@@ -1,0 +1,55 @@
+.patientDashboard {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: auto;
+    // padding: 10px;
+    .pd_content {
+        display: flex;
+        height: fit-content;
+        width: 100%;
+        flex-direction: column;
+        .pd_content_header {
+            display: flex;
+            flex-direction: column;
+            height: fit-content;
+            width: 100%;
+            background-image: url('/images/banner_stethoscope.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            .pd_content_header_title {
+                display: flex;
+                height: 70px;
+                width: 100%;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 0px 10px 0px 10px;
+                // border-bottom: 1px solid rgb(255, 255, 255);
+                // background: linear-gradient(180deg, white, rgba(255, 255, 255, 0.49), rgba(255, 255, 255, 0));
+                background: white;
+                box-shadow: 0 4px 20px -2px rgb(169, 169, 169);
+                h1 {
+                    font-size: 20px;
+                    font-family: 'Schibsted Grotesk', sans-serif;
+                    font-weight: 600;
+                    color: var(--blue-accent-color);
+                }
+            }
+            .pd_greeting_banner {
+                display: flex;
+                height: 260px;
+                width: 100%;
+                align-items: flex-end;
+                justify-content: flex-start;
+                padding: 20px 10px 20px 10px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0), white);
+                h2 {
+                    font-family: 'Inter', sans-serif;
+                    font-size: 28px;
+                    color: rgb(74, 74, 67);
+                }
+            }
+        }
+    }
+}

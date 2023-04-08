@@ -14,22 +14,22 @@ export default function PatientHomePage() {
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "dashboard"} onClick={() => {
                 switchTab("dashboard");
-            }} withIcon={{status: true, icon: <MdDashboard fontSize={20} />}}>{navMin ? "Dashboard": null}</SideNavBtn>
+            }} withIcon={{status: true, icon: <MdDashboard fontSize={20} />}}>{navMin ? null  :"Dashboard"}</SideNavBtn>
         },
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "myDoctors"} onClick={() => {
                 switchTab("myDoctors");
-            }} withIcon={{status: true, icon: <FaUserMd fontSize={20} />}}>{navMin ? "My Doctors" : null}</SideNavBtn>
+            }} withIcon={{status: true, icon: <FaUserMd fontSize={20} />}}>{navMin ? null  :"My Doctors" }</SideNavBtn>
         },
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "myRecords"} onClick={() => {
                 switchTab("myRecords");
-            }} withIcon={{status: true, icon: <BsFillFileEarmarkTextFill fontSize={20} />}}>{navMin ? "My Records" : null}</SideNavBtn>
+            }} withIcon={{status: true, icon: <BsFillFileEarmarkTextFill fontSize={20} />}}>{navMin ? null  :"My Records" }</SideNavBtn>
         },
         {
             btnComponent: <SideNavBtn variant={"primary"} isActive={currentTab.currentTab === "settings"} onClick={() => {
                 switchTab("settings");
-            }} withIcon={{status: true, icon: <HiCog6Tooth fontSize={20} />}}>{navMin ? "Settings" : null}</SideNavBtn>
+            }} withIcon={{status: true, icon: <HiCog6Tooth fontSize={20} />}}>{navMin ? null : "Settings" }</SideNavBtn>
         }
     ];
 
@@ -37,7 +37,7 @@ export default function PatientHomePage() {
         <>
             <Header title={"Medvista | Patient Dashboard"}></Header>
             <PageWrapper>
-                <SideNav switchBtns={switchBtns ?? []} isMinNav={(isMin) => {setNavMin(isMin)}} />
+                <SideNav switchBtns={switchBtns ?? []} isMinNav={(isMin) => {setNavMin(!isMin)}} />
                 <div className={styles.content_view}>
                     <PatientPageCurrentTab />
                 </div>

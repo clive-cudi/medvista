@@ -1,6 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: [
+      "source.unsplash.com"
+    ]
+  },
   env: {
     BACKEND_URL: `${process.env.BACKEND_URL}`,
     NEXTAUTH_URL: `${process.env.NEXTAUTH_URL}`,

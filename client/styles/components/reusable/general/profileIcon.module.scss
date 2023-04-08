@@ -1,0 +1,30 @@
+.profile_icon_wrapper {
+    display: flex;
+    height: 50px;
+    width: fit-content;
+    align-items: center;
+    padding: 10px;
+    .profile_icon_name {
+        display: flex;
+        height: 100%;
+        width: fit-content;
+        align-items: center;
+    }
+    .profile_icon {
+        display: flex;
+        height: 40px;
+        width: 40px;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        border-radius: 50%;
+        img {
+            height: 100%;
+            width: 100%;
+            border-radius: 50%;
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
