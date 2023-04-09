@@ -1,0 +1,68 @@
+.table {
+    // display: flex;
+    height: fit-content;
+    width: 100%;
+    border-collapse: collapse;
+    thead {
+        // display: flex;
+        height: 70px;
+        width: 100%;
+        background: #F7F7FC;
+        justify-content: space-evenly;
+        tr {
+            // display: flex;
+            height: 100%;
+            width: 100%;
+            align-items: center;
+            th {
+                // display: flexs;
+                height: 100%;
+                // width: 100%;
+                align-items: center;
+                justify-content: flex-start;
+                padding: 10px;
+                h4 {
+                    //styleName: Headlines/Headline Bold Normal;
+                    font-family: 'Inter', sans-serif;
+                    font-size: 14px;
+                    font-weight: 700;
+                    line-height: 19px;
+                    letter-spacing: 0.005em;
+                    text-align: left;
+                }
+            }
+        }
+    }
+    tbody {
+        height: fit-content;
+        width: 100%;
+        tr {
+            height: 60px;
+            border-bottom: 0.5px solid rgba(225, 225, 251, 1);
+            transition-timing-function: ease-in-out;
+            transition-duration: 0.4s;
+            position: relative;
+            td {
+                padding: 10px;
+                //styleName: Headlines/Headline Regular Normal;
+                font-family: 'Inter', sans-serif;
+                font-size: 14px;
+                font-weight: 400;
+                line-height: 19px;
+                letter-spacing: 0.005em;
+                text-align: left;
+                &[data-elm-type = "empty-table-row"] {
+                    text-align: center;
+                }
+            }
+            &.tr_clickable {
+                cursor: pointer;
+                &:hover {
+                    background: #F7F7FC;
+                    box-shadow: 1px 1px 10px 2px rgba(225, 225, 251, 1);
+                    transform: scale(1.01);
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,43 @@
+.myDoctors {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    overflow: auto;
+    // padding: 10px;
+    .pd_content {
+        display: flex;
+        height: fit-content;
+        width: 100%;
+        flex-direction: column;
+        .pd_content_body {
+            display: flex;
+            height: fit-content;
+            width: 100%;
+            flex-direction: column;
+            padding: 20px;
+            .pd_content_body_card_title {
+                display: flex;
+                height: 50px;
+                width: 100%;
+                align-items: center;
+                justify-content: flex-start;
+                h3 {
+                    font-family: 'Schibsted Grotesk', sans-serif;
+                    font-size: 20px;
+                }
+            }
+            .pd_content_body_card {
+                display: flex;
+                height: fit-content;
+                width: 100%;
+                padding: 10px;
+                flex-direction: column;
+                .pd_content_body_card_content {
+                    display: flex;
+                    width: 100%;
+                    height: fit-content;
+                }
+            }
+        }
+    }
+}
