@@ -6,6 +6,9 @@ export interface Patient extends mongoose.Document {
     name: string;
     diagnoses: string[];
     doctors: string[];
+    activeDoctors: string[];
+    inActiveDoctors: string[];
+    archivedDoctors: string[];
 }
 
 const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
@@ -18,7 +21,10 @@ const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
         required: true
     },
     doctors: [String],
-    diagnoses: [String]
+    diagnoses: [String],
+    activeDoctors: [String],
+    inActiveDoctors: [String],
+    archivedDoctors: [String]
 });
 
 const Patient = mongoose.model("Patient", patientSchema);
