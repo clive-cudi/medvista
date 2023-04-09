@@ -51,5 +51,121 @@
                 }
             }
         }
+        .pd_content_body {
+            display: flex;
+            height: fit-content;
+            width: 100%;
+            flex-direction: column;
+            padding: 20px;
+            .pd_content_body_strip {
+                display: flex;
+                height: fit-content;
+                width: 100%;
+                .pd_content_body_card {
+                    display: flex;
+                    height: fit-content;
+                    width: 50%;
+                    padding: 10px;
+                }
+                .pd_content_body_calendar_wrapper {
+                    display: flex;
+                    height: fit-content;
+                    width: 100%;
+                    flex-direction: column;
+                    .pd_content_body_card_title {
+                        display: flex;
+                        height: 50px;
+                        width: 100%;
+                        align-items: center;
+                        justify-content: flex-start;
+                        h3 {
+                            font-family: 'Schibsted Grotesk', sans-serif;
+                            font-size: 20px;
+                        }
+                    }
+                    .pd_content_body_calendar_content {
+                        display: flex;
+                        height: fit-content;
+                        width: 100%;
+                        padding: 10px 0px 10px 0px;
+                        .pd_content_body_calendar {
+                            display: flex;
+                            height: 300px;
+                            width: fit-content;
+                            padding: 10px;
+                            border-right: 1px solid rgb(211, 211, 211);
+                        }
+                        .pd_content_body_calendar_events {
+                            display: flex;
+                            width: 100%;
+                            // background: firebrick;
+                            padding: 10px;
+                            flex-direction: column;
+                            .pd_content_body_calendar_events_title {
+                                display: flex;
+                                height: 44px;
+                                width: 100%;
+                                align-items: center;
+                                border-bottom: 1px solid rgb(207, 207, 207);
+                                h3 {
+                                    font-family: 'Schibsted Grotesk', sans-serif;
+                                }
+                            }
+                            .pd_content_body_calendar_events_list {
+                                display: flex;
+                                height: 246px;
+                                width: 100%;
+                                padding: 10px;
+                                overflow: auto;
+                                ul {
+                                    display: flex;
+                                    height: fit-content;
+                                    width: 100%;
+                                    flex-direction: column;
+                                    list-style-type: none;
+                                    li {
+                                        display: flex;
+                                        height: 40px;
+                                        width: 100%;
+                                        border-bottom: 1px solid #d3e1f0;
+                                        padding: 10px 6px 10px 6px;
+                                        .pd_content_body_calendar_events_list_item {
+                                            display: flex;
+                                            height: 100%;
+                                            width: 100%;
+                                            align-items: center;
+                                            justify-content: space-between;
+                                            h4 {
+                                                font-family: 'Inter', sans-serif;
+                                                font-weight: 400;
+                                                font-size: 14px;
+                                            }
+                                        }
+                                        &:last-child {
+                                            border-bottom: none;
+                                        }
+                                        &[data-elm-type = "null-events"] {
+                                            align-items: center;
+                                            justify-content: center;
+                                            h4 {
+                                                color: #a0a0a0;
+                                                font-style: italic;
+                                                font-family: 'Inter', sans-serif;
+                                                font-weight: 400;
+                                                font-size: 14px;
+                                            }
+                                        }
+                                        &:hover {
+                                            box-shadow: 0 4px 20px -2px #e0e0e0;
+                                            cursor: pointer;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

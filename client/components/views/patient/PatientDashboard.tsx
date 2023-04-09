@@ -1,7 +1,26 @@
+import React, { useState } from "react";
 import styles from "@styles/components/views/patient/patientDashboard.module.scss";
 import { DashboardTopNav } from "@/components";
+import Calendar from "react-calendar";
+import 'react-calendar/dist/Calendar.css';
 
 export const PatientDashboard = (): JSX.Element => {
+    const [events, setEvents] = useState([
+        {
+            title: "Doctor's Appointment",
+            date: new Date(2021, 5, 1),
+            time: "10:00 AM",
+            location: "1234 Main St, New York, NY 10001"
+        },
+        {
+            title: "Doctor's Appointment",
+            date: new Date(2021, 5, 1),
+            time: "10:00 AM",
+            location: "1234 Main St, New York, NY 10001"
+        },
+    ]);
+
+
     return (
         <div className={styles.patientDashboard}>
             <div className={styles.pd_content}>
@@ -13,6 +32,59 @@ export const PatientDashboard = (): JSX.Element => {
                     <div className={styles.pd_greeting_banner}>
                         <h2>Good Morning, <span>John Doe</span></h2>
                     </div>
+                </div>
+                <div className={styles.pd_content_body}>
+                    <div className={styles.pd_content_body_strip}>
+                        <div className={`${styles.pd_content_body_calendar_wrapper}`}>
+                            <div className={styles.pd_content_body_card_title}><h3>My Calendar</h3></div>
+                            <div className={styles.pd_content_body_calendar_content}>
+                                <div className={styles.pd_content_body_calendar}>
+                                    <Calendar />
+                                </div>
+                                <div className={styles.pd_content_body_calendar_events}>
+                                    <div className={styles.pd_content_body_calendar_events_title}><h3>Events</h3></div>
+                                    <div className={styles.pd_content_body_calendar_events_list}>
+                                        <ul>
+                                            {events.length > 0 ?
+                                                events.map((event, index) => {
+                                                    return (
+                                                        <li key={index}>
+                                                            <div className={styles.pd_content_body_calendar_events_list_item}>
+                                                                <div className={styles.pd_content_body_calendar_events_list_item_title}>
+                                                                    <h4>{event.title}</h4>
+                                                                </div>
+                                                                <div className={styles.pd_content_body_calendar_events_list_item_date}>
+                                                                    <h4>{event.date.toLocaleDateString()}</h4>
+                                                                </div>
+                                                                <div className={styles.pd_content_body_calendar_events_list_item_time}>
+                                                                    <h4>{event.time}</h4>
+                                                                </div>
+                                                                <div className={styles.pd_content_body_calendar_events_list_item_location}>
+                                                                    <h4>{event.location}</h4>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    )
+                                                }) : <li key={0} data-elm-type={"null-events"}><h4>No events scheduled</h4></li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <div className={styles.pd_content_body_strip}>
+                        <div className={styles.pd_content_body_card}>
+                            <div className={styles.pd_content_body_card_title}>
+                                <h3>My Appointments</h3>
+                            </div>
+                        </div>
+                        <div className={styles.pd_content_body_card}>
+                            <div className={styles.pd_content_body_card_title}>
+                                <h3>My Doctors</h3>
+                            </div>
+                        </div>
+                    </div> */}
                 </div>
             </div>
         </div>
