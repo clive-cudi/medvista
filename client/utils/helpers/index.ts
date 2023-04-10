@@ -34,4 +34,4 @@ export const validateEmail = (email: string) => {
   // console.log(checkFormInputs({data: {cool: true, wow: "hello"}, exclude: ["cool"]}))
 
   export { EMAIL_REGEX, PASSWORD_REGEX, FULLNAME_SPACED_REGEX, ALL_INTEGERS_REGEX } from "./regex";
-  
+  export { api } from "./axios.config";

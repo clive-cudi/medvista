@@ -484,17 +484,37 @@ const getMyDoctors = (req: Request, res: Response) => {
         if (user) {
             const doctors = user.patient.doctors;
 
-            return res.status(200).json({
-                message: "Doctors found",
-                usertoken: {
-                    user: user,
-                    token: usertoken.token
-                },
-                error: {
-                    status: false,
-                    code: null
-                },
-                doctors: doctors
+            User.find({id: {$in: doctors}, usertype: "doctor"}).then((doctors) => {
+                // remove the password from the doctors
+
+                return res.status(200).json({
+                    message: "Doctors found",
+                    usertoken: {
+                        user: user,
+                        token: usertoken.token
+                    },
+                    error: {
+                        status: false,
+                        code: null
+                    },
+                    doctors: doctors.map((doc) => {
+                        const { password, doctor, ...allowedData } = doc._doc;
+                        return allowedData;
+                    })
+                });
+            }).catch((doctors_find_err) => {
+                return res.status(500).json({
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: doctors_find_err
+                    }
+                });
             });
         } else {
             return res.status(404).json({

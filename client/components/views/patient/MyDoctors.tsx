@@ -1,8 +1,12 @@
 import styles from "@styles/components/views/patient/myDoctors.module.scss";
-import { DashboardTopNav } from "@/components/reusable";
-import { Table, DoctorInfoPopup } from "@/components/reusable";
+import { DashboardTopNav, RegularBtn } from "@/components/reusable";
+import { Table, DoctorInfoPopup, AddDoctorPopup } from "@/components/reusable";
 import { useModal } from "@/hooks";
 import type { Doctor } from "@/components/reusable";
+import { useState, useEffect } from "react";
+import { PatientQueries } from "@/utils";
+import { AiOutlinePlus } from "react-icons/ai";
+import { useSession } from "next-auth/react";
 
 export const MyDoctors = (): JSX.Element => {
     const tableConfig = {
@@ -24,6 +28,18 @@ export const MyDoctors = (): JSX.Element => {
         id: "123",
         status: "archived"
     };
+    const session = useSession();
+    const [doctors, setDoctors] = useState<Doctor[]>([]);
+    const { getMyDoctors } = PatientQueries(session);
+
+    useEffect(() => {
+        getMyDoctors().then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, []);
+
 
     return (
         <div className={styles.myDoctors}>
@@ -32,7 +48,16 @@ export const MyDoctors = (): JSX.Element => {
                 <div className={styles.pd_content_body}>
                     {/* display a table of doctors assigned to the patient */}
                     <div className={styles.pd_content_body_strip}>
-                        <div className={styles.pd_content_body_card_title}><h3>My Doctors</h3></div>
+                        <div className={`${styles.pd_content_body_card_title} ${styles.pd_content_body_card_title_with_add}`}>
+                            <span>
+                                <h3>My Doctors</h3>
+                            </span>
+                            <span>
+                                <RegularBtn withIcon={{status: true, icon: <AiOutlinePlus />, orientation: "start"}} onClick={() => {
+                                    openModal(<AddDoctorPopup />);
+                                }}>Add a doctor</RegularBtn>
+                            </span>
+                        </div>
                         <div className={styles.pd_content_body_card}>
                             <div className={styles.pd_content_body_card_title}><h3>Active</h3></div>
                             <div className={styles.pd_content_body_card_content}>

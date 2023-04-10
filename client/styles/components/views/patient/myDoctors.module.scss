@@ -25,6 +25,19 @@
                     font-family: 'Schibsted Grotesk', sans-serif;
                     font-size: 20px;
                 }
+                &.pd_content_body_card_title_with_add {
+                    justify-content: space-between;
+                    span {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100%;
+                        width: fit-content;
+                        button {
+                            width: 200px;
+                        }
+                    }
+                }
             }
             .pd_content_body_card {
                 display: flex;
