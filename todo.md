@@ -1,0 +1,14 @@
+### doctor table row onclick()
+ - should show additional doctor information plus operations to be done on the selected doctor
+ - should open a modal with additional information on the doctor:
+ 	- Name
+	- Specialty
+	- location
+	- phone
+	- email
+	- profile pic
+	- + alter operations
+ - necessary operations:
+ 	- Archive a doctor
+	- remove a doctor
+	- revoke medical glimpse approval
