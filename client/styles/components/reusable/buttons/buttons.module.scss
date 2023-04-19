@@ -42,6 +42,14 @@
         border-radius: 6px;
       }
     }
+	.regular_btn_loading_icon {
+        display: flex;
+        height: 100%;
+        width: fit-content;
+        align-items: center;
+        justify-content: center;
+        animation: animate-load-spin 0.8s linear infinite;
+    }
     .bubble_collection {
         display: none;
         height: 100%;
@@ -147,6 +155,68 @@
   }
 }
 
+.icon_btn {
+  display: flex;
+  height: 30px;
+  width: 30px;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: none;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px -2px #e0e0e0;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.4s;
+  &:hover {
+      cursor: pointer;
+      background: var(--blue-gradient);
+      color: white;
+  }
+  img {
+      height: 18px;
+      width: 18px;
+      object-fit: contain;
+  }
+  &.icon_btn_text {
+      background: none;
+      &:hover {
+          color: white;
+          background: rgba(80, 48, 229, 1);
+      }
+  }
+  &.icon_btn_contained {
+      background: rgba(80, 48, 229, 0.65);
+      color: white;
+      &:hover {
+          background: rgba(80, 48, 229, 1);
+      }
+  }
+  &.icon_btn_outlined {
+      background: none;
+      border: 0.5px solid rgba(219, 219, 219, 1);
+      &:hover {
+          color: white;
+          background: rgba(80, 48, 229, 1);
+      }
+  }
+  &.icon_btn_util {
+      height: 24px;
+      width: 24px;
+      border-radius: 8px;
+      background: rgba(80, 48, 229, 0.08);
+      color: rgba(80, 48, 229, 1);
+      font-size: 20px;
+      &:hover {
+          cursor: pointer;
+          background: rgba(80, 48, 229, 1);
+          color: white;
+      }
+  }
+  &:hover {
+      cursor: pointer;
+  }
+}
+
 @keyframes animate-first-dot {
   0% {
     height: 14px;
@@ -190,4 +260,21 @@
     height: 14px;
     width: 14px;
   }
+}
+@keyframes animate-load-spin {
+    100%
+    {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes animate-notification-badge {
+    0%
+    {
+        transform: scale(0.6);
+    }
+    100%
+    {
+        transform: scale(1);
+    }
 }

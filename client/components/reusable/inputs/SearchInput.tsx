@@ -12,9 +12,10 @@ export interface SearchInput_Props extends DetailedHTMLProps<InputHTMLAttributes
     }[],
     onResultClick?: (e: React.MouseEvent<HTMLLIElement, MouseEvent>, result: {label: string, id: string, value: string}) => void
     removeResultsOnClick?: boolean
+    enableSuggestions?: boolean
 }
 
-export const SearchInput = ({ onChange, iconAlt, wrapperOnClick, resultsData, onResultClick, removeResultsOnClick = true,  ...otherInputProps }: SearchInput_Props) => {
+export const SearchInput = ({ onChange, iconAlt, wrapperOnClick, resultsData, onResultClick, removeResultsOnClick = true, enableSuggestions = true,  ...otherInputProps }: SearchInput_Props) => {
     const [displayResults, setDisplayResults] = useState<boolean>(true);
     const [selectedResult, setSelectedResult] = useState<string>("");
     const inputRef = useRef<HTMLInputElement>(null);
@@ -29,7 +30,6 @@ export const SearchInput = ({ onChange, iconAlt, wrapperOnClick, resultsData, on
 
     function handleInputChange(e: ChangeEvent<HTMLInputElement>) {
         setSelectedResult((prev) => {
-            // console.log(prev);
             return e.target.value;
         });
         onChange && onChange(e);
@@ -52,7 +52,7 @@ export const SearchInput = ({ onChange, iconAlt, wrapperOnClick, resultsData, on
                 <span>{iconAlt ?? <FiSearch />}</span>
                 <input type="text" name="search_query" value={selectedResult} id="query" placeholder={selectedResult.length > 0 ? selectedResult : "Search for anything..."} onChange={handleInputChange} ref={inputRef} data-elm-type={"search-input"} {...otherInputProps} />
             </div>
-            {resultsData && displayResults && (
+            {resultsData && displayResults && enableSuggestions && (
                 <div className={styles.search_input_results} data-elm-type="search-input">
                     <ul>
                         {

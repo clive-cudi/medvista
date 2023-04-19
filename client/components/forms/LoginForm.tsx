@@ -18,6 +18,7 @@ export const LoginForm = (): JSX.Element => {
     });
     const { openModal } = useModal();
     const router = useRouter();
+	const [isFormLoading, setIsFormLoading] = useState<boolean>(false);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
         const value = e.target.value;
@@ -34,6 +35,7 @@ export const LoginForm = (): JSX.Element => {
 
     function submitLogin(): void {
         if (checkFormInputs({data: loginData, exclude: []})) {
+			setIsFormLoading(true);
             console.log(loginData);
             console.log("Submitting");
             signIn("credentials_id_password", {
@@ -41,6 +43,7 @@ export const LoginForm = (): JSX.Element => {
                 password: loginData.password,
                 redirect: false
             }).then(async (res) => {
+				setIsFormLoading(false);
                 console.log(res);
                 if (res?.error) {
                     openModal(<PopupModal message={JSON.parse(res.error).message ?? "Invalid ID or Password"} />);
@@ -57,6 +60,7 @@ export const LoginForm = (): JSX.Element => {
                     router.push("/");
                 }
             }).catch((err) => {
+				setIsFormLoading(false);
                 console.log(err);
                 openModal(<PopupModal message="Invalid ID or Password"/>)
             })
@@ -70,7 +74,7 @@ export const LoginForm = (): JSX.Element => {
         <form className={styles.login_form} onSubmit={(e) => {e.preventDefault()}}>
             <InputDiv type={`text`} placeholder={`Enter ID`} icon={<MdOutlineMail />} inputArgs={{name: "id"}} onChange={handleChange} />
             <PasswordInput placeholder={"Enter Password"} inputArgs={{name: "password"}} onChange={handleChange} />
-            <RegularBtn type="submit" onClick={submitLogin}>Login</RegularBtn>
+			<RegularBtn type="submit" isLoading={{status: isFormLoading}} onClick={submitLogin}>Login</RegularBtn>
         </form>
     )
 }

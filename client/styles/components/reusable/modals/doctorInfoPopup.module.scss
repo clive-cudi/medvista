@@ -84,6 +84,65 @@
                     }
                 }
             }
+            &.with_search {
+                column-gap: 10px;
+                button[data-elm-type = "search_btn"] {
+                    height: 40px;
+                }
+            }
+            &.search_results_wrapper {
+                height: fit-content;
+                min-height: 100px;
+                max-height: 500px;
+                overflow: auto;
+                flex-direction: column;
+                padding: 10px;
+                row-gap: 10px;
+                scrollbar-width: 0px;
+                &::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+            .dip_info_result {
+                display: flex;
+                height: 50px;
+                width: 100%;
+                align-items: center;
+                justify-content: space-between;
+                padding: 10px;
+                position: relative;
+                border-radius: 6px;
+                .dip_info_result_col {
+                    display: flex;
+                    height: 100%;
+                    width: fit-content;
+                    align-items: center;
+                }
+                .result_utils {
+                    display: none;
+                    height: 100%;
+                    width: 100%;
+                    position: absolute;
+                    border-radius: 6px;
+                    padding: 10px;
+                    // background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(145, 143, 179, 0.524) 100%);
+                    box-shadow: 0 4px 20px -2px #e0e0e0;
+                    justify-content: flex-end;
+                    animation: animate-result-utils-in 0.4s linear forwards;
+                }
+                &:hover {
+                    cursor: pointer;
+                    .result_utils {
+                        display: flex;
+                    }
+                }
+            }
         }
+    }
+}
+
+@keyframes animate-result-utils-in {
+    0% {
+        transform: translateX(10px);
     }
 }
