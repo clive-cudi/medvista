@@ -8,10 +8,15 @@ export default function Login() {
         <>
             <Header title={"MedVista | Login"} />
             <PageWrapper className={styles.login_page}>
-                <div className={styles.login_page_logo}>
-                    <Image src={"/logos/medvista_logo.png"} alt={"@medvista_logo"} fill />
+                <div className={styles.login_page_col}>
+                    <Image src={`/images/medvista_login_img.jpg`} alt="@login_banner" fill />
                 </div>
-                <FormWrapper form={<LoginForm />} variant={"authLogin"} enableSocials />
+                <div className={styles.login_page_col}>
+                    <div className={styles.login_page_logo}>
+                        <Image src={"/logos/medvista_logo.png"} alt={"@medvista_logo"} fill />
+                    </div>
+                    <FormWrapper form={<LoginForm />} variant={"authLogin"} enableSocials />
+                </div>
             </PageWrapper>
         </>
     )

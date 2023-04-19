@@ -8,10 +8,15 @@ export default function Signup() {
         <>
             <Header title={"MedVista | Signup"} />
             <PageWrapper className={styles.login_page}>
-                <div className={styles.login_page_logo}>
-                    <Image src={"/logos/medvista_logo.png"} alt={"@medvista_logo"} fill />
+                <div className={styles.login_page_col}>
+                    <Image src={`/images/medvista_login_img.jpg`} alt="@signup_banner" fill />
                 </div>
-                <FormWrapper form={<SignupForm />} variant={"authSignup"} enableSocials />
+                <div className={styles.login_page_col}>
+                    <div className={styles.login_page_logo}>
+                        <Image src={"/logos/medvista_logo.png"} alt={"@medvista_logo"} fill />
+                    </div>
+                    <FormWrapper form={<SignupForm />} variant={"authSignup"} enableSocials />
+                </div>
             </PageWrapper>
         </>
     )
