@@ -6,6 +6,10 @@ First, run the development server:
 
 ```bash
 npm run dev
+
+pnpm run dev
+
+yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -19,6 +23,7 @@ The `pages/api` directory is mapped to `/api/*`. Files in this directory are tre
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
 Attempt 4
+## Learn More
 
 To learn more about Next.js, take a look at the following resources:
 
@@ -34,3 +39,4 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
 
+latest changes
