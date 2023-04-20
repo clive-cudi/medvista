@@ -38,7 +38,7 @@ export const MyDoctors = (): JSX.Element => {
         }).catch((err) => {
             console.log(err);
         });
-    }, []);
+    });
 
 
     return (

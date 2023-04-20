@@ -52,9 +52,9 @@ export const AddDoctorPopup = (): JSX.Element => {
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.search_results_wrapper}`}>
                     {results.length > 0 ? (
-                        results.map((rslt) => {
+                        results.map((rslt, ix) => {
                             return (
-                                <div className={styles.dip_info_result}>
+                                <div key={ix} className={styles.dip_info_result}>
                                     <div className={styles.dip_info_result_col}>
                                         <span>{rslt.label}</span>
                                     </div>
