@@ -1,6 +1,8 @@
 import { Request, Response,  } from "express";
 import { User } from "../models/user.model";
 import { Doctor } from "../models/doctor.model";
+import { Diagnosis } from "../models/diagnosis.model";
+import { v4 as v4ID } from "uuid";
 
 const getAllPatients = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -368,4 +370,241 @@ const searchDoctorsByName = (req: Request, res: Response) => {
     });
 }
 
-export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName };
+// view patient's medical history
+const getPatientMedicalHistory = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: doctorId } = usertoken;
+
+    const { id: patientId } = req.params;
+    
+    // check if doctor is allowed to view medical records
+    User.findOne({id: patientId, usertype: "patient"}).then((targetPatient) => {
+        if (targetPatient) {
+            const authorizedDoctors = targetPatient.patient.doctors;
+
+            if (authorizedDoctors.includes(doctorId)) {
+                // doctor is authorized
+                const diagnoses = targetPatient.patient.diagnoses;
+
+                Diagnosis.find({diagnosisId: {$in: diagnoses}}).then((fetchedRecords) => {
+                    return res.status(200).json({
+                        success: true,
+                        message: "Medical records fetched successfully",
+                        medical_history: fetchedRecords,
+                        error: {
+                            status: false,
+                            code: null
+                        }
+                    })
+                }).catch((records_fetch_err) => {
+                    return res.status(400).json({
+                        success: false,
+                        message: "Error while retrieving records",
+                        usertoken: {
+                            user: usertoken,
+                            token: usertoken.token
+                        },
+                        medical_history: null,
+                        error: {
+                            status: true,
+                            code: "internal_server_error",
+                            debug: records_fetch_err
+                        }
+                    })
+                });
+            } else {
+                // doctor not authorized [not whitelisted]
+                return res.status(403).json({
+                    success: false,
+                    message: "Not authorized to view records",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    medical_history: null,
+                    error: {
+                        status: true,
+                        code: "not_authorized",
+                        debug: null
+                    }
+                })
+            }
+        } else {
+            // patient not found
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "patient_not_found",
+                    debug: "Patient not found"
+                }
+            });
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    })
+};
+
+// create medical record/diagnosis
+const createMedicalRecord = async (req: Request, res: Response) => {
+    const { usertoken, patientId, date, symptoms, diagnosis, treatment } = req.body;
+    const { id: doctorId } = usertoken;
+    let patientExists = false;
+
+    if (!patientId || !date || !symptoms || !diagnosis) {
+        return res.status(403).json({
+            success: false,
+            message: "Missing inputs",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "invalid_inputs",
+                debug: null
+            }
+        })
+    };
+
+    await User.findOne({id: patientId, usertype: "patient"}).then((usr) => {
+        if (usr) {
+            patientExists = true;
+            return;
+        } else {
+            // patient not found
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "patient_not_found",
+                    debug: "Patient not found"
+                }
+            });
+        }
+    }).catch((usr_find_error) => {
+        return res.status(400).json({
+            success: false,
+            message: "Error Fetching user from DB!!",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "db_error",
+                debug: usr_find_error
+            }
+        });
+    })
+
+
+    if (!patientExists) {
+        return;
+    }
+
+    // random id for diagnosis
+    const diagnosisId = `diagnosis_${v4ID()}`;
+
+    // check if the patient exists
+    User.findOneAndUpdate({id: patientId, usertype: "patient"}, {
+        $addToSet: {
+            "patient.diagnoses": diagnosisId
+        }
+    }).then((target_patient) => {
+        if (target_patient) {
+            // construct new Diagnosis
+            const newDiagnosis = new Diagnosis({
+                diagnosisId: diagnosisId,
+                patient: patientId,
+                doctor: doctorId,
+                date: date,
+                symptoms: symptoms,
+                treatment: treatment ?? "_",
+                whitelisted: [doctorId]
+            });
+
+            newDiagnosis.save().then((ndoc) => {
+                return res.status(200).json({
+                    success: true,
+                    message: "Successfully created new record",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    medical_history: ndoc,
+                    error: {
+                        status: false,
+                        code: null
+                    }
+                });
+            }).catch((new_diagnosis_save_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal server error",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: new_diagnosis_save_err
+                    }
+                });
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "patient_not_found",
+                    debug: "Patient not found"
+                }
+            });
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    })
+}
+
+export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory };
