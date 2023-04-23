@@ -11,6 +11,7 @@ export interface Diagnosis {
     treatment: string;
     isApproved: boolean;
     isPendingDelete: boolean;
+    whitelisted: string[];
 }
 
 const diagnosisSchema = new Schema<Diagnosis, Model<Diagnosis>, Diagnosis>({
@@ -49,7 +50,8 @@ const diagnosisSchema = new Schema<Diagnosis, Model<Diagnosis>, Diagnosis>({
     isPendingDelete: {
         type: Boolean,
         default: false
-    }
+    },
+    whitelisted: [String]
 }, {
     timestamps: true,
 });

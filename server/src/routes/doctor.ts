@@ -1,12 +1,13 @@
 import { Router } from "express";
 const router = Router();
 import { verifyToken, doctor_verify } from "../middleware";
+import { getAllPatients, getPatientById } from "../controllers/doctor.controller";
 
 // view all patients
-router.get("/patients", verifyToken, doctor_verify);
+router.get("/patients", verifyToken, doctor_verify, getAllPatients);
 
 // view patient by id
-router.get("/patients/:id", verifyToken, doctor_verify);
+router.get("/patients/:id", verifyToken, doctor_verify, getPatientById);
 
 // request to view patient's medical history
 router.post("/patients/:id/request", verifyToken, doctor_verify);
