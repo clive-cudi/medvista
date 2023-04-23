@@ -731,4 +731,57 @@ const approveMedicalGlimpseRequest = (req: Request, res: Response) => {
     })
 }
 
-export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest };
+// search patient by name
+const searchPatient = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: userId } = usertoken;
+
+    const { name } = req.params;
+
+    User.find({usertype: "patient", name: {$regex: name, $options: "i"}}).then((patients) => {
+        if (patients) {
+            return res.status(200).json({
+                success: true,
+                message: "patients found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                patients: patients.map((dt) => {
+                    const { password, patient, ...include } = dt._doc;
+                    return include;
+                })
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "No patients found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "no_patients_found",
+                    debug: "No patients found"
+                }
+            })
+        }
+    }).catch((err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: err
+            }
+        });
+    });
+}
+
+export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest, searchPatient };

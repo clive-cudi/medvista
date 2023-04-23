@@ -1,7 +1,7 @@
 import { Router } from "express";
 const router = Router();
 import { verifyToken, patient_verify } from "../middleware";
-import { getMyDoctors, createMedicalHistory, deleteMedicalHistory, getMedicalHistory, getMedicalHistoryByID, getPatientById, updateMedicalHistory } from "../controllers/patient.controller";
+import { getMyDoctors, createMedicalHistory, deleteMedicalHistory, getMedicalHistory, getMedicalHistoryByID, getPatientById, updateMedicalHistory, searchPatient } from "../controllers/patient.controller";
 
 // get patient profile by id
 router.get("/profile/:id", verifyToken, getPatientById);
@@ -53,5 +53,8 @@ router.get("/my-doctors/glimpse-approvals", verifyToken, patient_verify);
 
 // deny medical glimpse to doctor request
 router.delete("/my-doctors/revoke-glimpse", verifyToken, patient_verify);
+
+// search patient by name
+router.get("/search/:name", verifyToken, searchPatient);
 
 export default router;
