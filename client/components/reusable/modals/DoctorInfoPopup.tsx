@@ -2,19 +2,20 @@ import styles from "@styles/components/reusable/modals/doctorInfoPopup.module.sc
 import { HiArchive } from "react-icons/hi";
 import { BsEyeSlashFill, BsEyeFill } from "react-icons/bs";
 import { MdBlock } from "react-icons/md";
+import { Doctor } from "@/types";
 
-export interface Doctor {
-    name: string
-    specialty: string
-    location: string
-    phone: string
-    email: string
-    id: string
-    status: "active" | "inactive" | "archived"
-}
+// export interface Doctor {
+//     name: string
+//     specialty: string
+//     location: string
+//     phone: string
+//     email: string
+//     id: string
+//     status: "active" | "inactive" | "archived"
+// }
 
 interface DoctorInfoPopupProps {
-    doctor: Doctor
+    doctor: Doctor | null
     onClose: () => void
 }
 
@@ -29,7 +30,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.name}</span>
+                        <span>{doctor?.name}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -39,7 +40,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.specialty}</span>
+                        <span>{doctor?.specialty}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -49,7 +50,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.email}</span>
+                        <span>{doctor?.email}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -59,7 +60,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.phone}</span>
+                        <span>{doctor?.phoneNumber}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column}`}>
@@ -69,7 +70,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.location}</span>
+                        <span>{doctor?.location}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -79,14 +80,14 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor.status}</span>
+                        <span>{doctor?.status}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row} ${styles.dip_info_strip_btns}`}>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
                         {/* data label */}
                         {/* thinking of yellow-ish accent */}
-                        <button data-elm-type={"archive_btn"}><HiArchive /> {doctor.status === "archived" ? "Unarchive" : "Archive"}</button>
+                        <button data-elm-type={"archive_btn"}><HiArchive /> {doctor?.status === "archived" ? "Unarchive" : "Archive"}</button>
                     </div>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
                         {/* data */}
@@ -96,7 +97,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
                         {/* data label */}
-                        <button data-elm-type={"revoke_btn"}>{doctor.status === "inactive" ? <BsEyeFill /> :<BsEyeSlashFill />} {doctor.status === "inactive" ? "Enable Medical glimpse" : "Revoke Medical glimpse"}</button>
+                        <button data-elm-type={"revoke_btn"}>{doctor?.status === "inactive" ? <BsEyeFill /> :<BsEyeSlashFill />} {doctor?.status === "inactive" ? "Enable Medical glimpse" : "Revoke Medical glimpse"}</button>
                     </div>
                 </div>
             </div>

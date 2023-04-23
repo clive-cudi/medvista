@@ -12,6 +12,8 @@ export interface UserType {
     doctor: Doctor;
     patient: Patient;
     isVerified: boolean;
+    location: string;
+    phoneNumber: string;
     _doc: any;
 }
 
@@ -41,7 +43,9 @@ const userSchema = new Schema<UserType, Model<UserType>, UserType>({
     isVerified: {
         type: Boolean,
         default: false
-    }
+    },
+    location: String,
+    phoneNumber: String
 }, {
     timestamps: true
 });

@@ -6,12 +6,13 @@ interface Table_Props {
   tableConfig?: {
     headers: string[] | JSX.Element[] | React.ReactNode[];
     data: string[][];
+    identifiers: string[];
   };
   className?: string;
   clickableRows?: boolean;
   onClickHandler?: (
     e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>,
-    clickedRow: number
+    clickedRow: {index: number, identifier: string}
   ) => void;
   emptyMessage?: string
 }
@@ -46,15 +47,16 @@ export const Table = ({
                 clickable={clickableRows ?? false}
                 onClick={(e) => {
                   if (clickableRows && onClickHandler) {
-                    onClickHandler(e, index);
+                    onClickHandler(e, {index, identifier: tableConfig.identifiers[index]});
                   }
                 }}
                 headers={tableConfig.headers}
+                identifier={tableConfig.identifiers[index]}
               />
             );
           })
         ) : (
-          <TableRow rowData={[]} headers={tableConfig?.headers as string[]} emptyMessage={emptyMessage} />
+          <TableRow rowData={[]} identifier={""} headers={tableConfig?.headers as string[]} emptyMessage={emptyMessage} />
         )}
       </tbody>
     </table>

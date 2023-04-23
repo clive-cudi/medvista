@@ -1,5 +1,6 @@
 import { api } from "../helpers";
 import { SessionContextValue } from "next-auth/react";
+import { API_res_model, Diagnosis, Doctor, Patient } from "@/types";
 
 export const PatientQueries = (session: SessionContextValue) => {
     const { data: session_data } = session;
@@ -7,7 +8,7 @@ export const PatientQueries = (session: SessionContextValue) => {
 
     return {
         getPatientById: async (id: string) => {
-            const { data } = await api.get(`/patient/profile/${id}`, {
+            const { data } = await api.get<API_res_model & Patient>(`/patient/profile/${id}`, {
                 headers: {
                     Authorization: token,
                 },
@@ -15,7 +16,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return data;
         },
         getMedicalHistory: async () => {
-            const { data } = await api.get("/patient/medical-history", {
+            const { data } = await api.get<API_res_model & {medical_history: Diagnosis[]}>("/patient/medical-history", {
                 headers: {
                     Authorization: token,
                 },
@@ -23,7 +24,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return data;
         },
         getMedicalHistoryByID: async (id: string) => {
-            const { data } = await api.get(`/patient/medical-history/${id}`, {
+            const { data } = await api.get<API_res_model & Diagnosis>(`/patient/medical-history/${id}`, {
                 headers: {
                     Authorization: token,
                 },
@@ -31,7 +32,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return data;
         },
         createMedicalHistory: async (data: any) => {
-            const { data: res } = await api.post("/patient/medical-history", data, {
+            const { data: res } = await api.post<API_res_model & Diagnosis>("/patient/medical-history", data, {
                 headers: {
                     Authorization: token,
                 },
@@ -39,7 +40,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return res;
         },
         updateMedicalHistory: async (id: string, data: any) => {
-            const { data: res } = await api.post(`/patient/medical-history/${id}`, data, {
+            const { data: res } = await api.post<API_res_model & Diagnosis>(`/patient/medical-history/${id}`, data, {
                 headers: {
                     Authorization: token,
                 },
@@ -47,7 +48,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return res;
         },
         deleteMedicalHistory: async (id: string) => {
-            const { data } = await api.delete(`/patient/medical-history/${id}`, {
+            const { data } = await api.delete<API_res_model & Diagnosis>(`/patient/medical-history/${id}`, {
                 headers: {
                     Authorization: token,
                 },
@@ -55,7 +56,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return data;
         },
         getMyDoctors: async () => {
-            const { data } = await api.get("/patient/my-doctors", {
+            const { data } = await api.get<API_res_model & {doctors: {active: Doctor[], inactive: Doctor[], archived: Doctor[]}}>("/patient/my-doctors", {
                 headers: {
                     Authorization: token,
                 },

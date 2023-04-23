@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { Diagnosis } from "../models/diagnosis.model";
-import { Doctor } from "../models/doctor.model";
 
 const getMedicalHistory = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -504,10 +503,29 @@ const getMyDoctors = (req: Request, res: Response) => {
 
     User.findOne({id: userId, usertype: "patient"}).then((user) => {
         if (user) {
-            const doctors = user.patient.doctors;
+            // const doctors = user.patient.doctors;
+            const activeDoctors = user.patient.activeDoctors;
+            const inActiveDoctors = user.patient.inActiveDoctors;
+            const archivedDoctors = user.patient.archivedDoctors;
+            type doctorStatus = "active" | "inactive" | "archived";
+            // doctors: {id: string, status: "active" | "inactive" | "archived"}[]
+            const doctors = [...activeDoctors.map((a_doc) => ({id: a_doc, status: "active"})), ...inActiveDoctors.map((i_doc) => ({id: i_doc, status: "inactive"})), ...archivedDoctors.map((ar_doc) => ({id: ar_doc, status: "archived"}))];
 
-            User.find({id: {$in: doctors}, usertype: "doctor"}).then((doctors) => {
+            User.find({id: {$in: doctors.map((doc) => doc.id)}, usertype: "doctor"}).then((found_doctors) => {
                 // remove the password from the doctors
+                const doctorStatusConstruct: {[key: string]: string[]} = {
+                  active: [],
+                  inactive: [],
+                  archived: []  
+                };
+
+                for (let i = 0; i < found_doctors.length; i++) {
+                    const targetDoctor = doctors.find((dctr) => dctr.id === found_doctors[i].id);
+                    
+                    if (targetDoctor) {
+                        doctorStatusConstruct[targetDoctor.status] = [...doctorStatusConstruct[targetDoctor.status], targetDoctor.id];
+                    }
+                }
 
                 return res.status(200).json({
                     success: true,
@@ -520,10 +538,12 @@ const getMyDoctors = (req: Request, res: Response) => {
                         status: false,
                         code: null
                     },
-                    doctors: doctors.map((doc) => {
-                        const { password, doctor, ...allowedData } = doc._doc;
-                        return allowedData;
-                    })
+                    // doctors: doctors.map((doc) => {
+                    //     const { password, doctor, ...allowedData } = doc._doc;
+                    //     const { specialty } = doctor;
+                    //     return {...allowedData, doctor: { specialty }};
+                    // })
+                    doctors: doctorStatusConstruct
                 });
             }).catch((doctors_find_err) => {
                 return res.status(500).json({

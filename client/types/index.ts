@@ -45,3 +45,37 @@ export interface PageAuth {
 
 export type doctorTabs = "dashboard" | "myPatients" | "settings";
 export type patientTabs = "dashboard" | "myDoctors" | "myRecords" | "settings";
+
+export interface Doctor {
+    id: string;
+    name: string;
+    email: string;
+    usertype: "doctor";
+    isVerified: boolean;
+    location: string;
+    phoneNumber: string;
+    specialty: string;
+    status: "active" | "inactive" | "archived"
+}
+
+export interface Patient {
+    id: string;
+    name: string;
+    email: string;
+    usertype: "patient";
+    isVerified: boolean;
+    location: string;
+    phoneNumber: string;
+}
+
+export interface Diagnosis {
+    diagnosisId: string;
+    diagnosis: string;
+    patient: string;
+    doctor: string;
+    symptoms: string;
+    treatment: string;
+    isApproved: boolean;
+    isPendingDelete: boolean;
+    date: Date;
+}

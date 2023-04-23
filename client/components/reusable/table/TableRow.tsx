@@ -7,6 +7,7 @@ interface TableRow_Props {
   onClick?: (e: MouseEvent<HTMLTableRowElement, globalThis.MouseEvent>) => void;
   emptyMessage?: string;
   headers: string[] | Element[] | ReactNode[]
+  identifier: string
 }
 
 export const TableRow = ({
@@ -14,7 +15,8 @@ export const TableRow = ({
   clickable,
   onClick,
   emptyMessage,
-  headers
+  headers,
+  identifier
 }: TableRow_Props) => {
   const rowStyling: CSSProperties = {
     borderBottom: "0.5px solid yellow",

@@ -2,20 +2,10 @@ import styles from "@styles/components/reusable/modals/doctorInfoPopup.module.sc
 import { HiArchive } from "react-icons/hi";
 import { BsEyeSlashFill, BsEyeFill } from "react-icons/bs";
 import { MdBlock } from "react-icons/md";
-
-export interface Diagnosis {
-    diagnosisId: string;
-    diagnosis: string;
-    doctor: string;
-    date: string;
-    symptoms: string;
-    treatment: string;
-    isApproved: boolean;
-    idPendingDelete: boolean;
-}
+import { Diagnosis } from "@/types";
 
 interface DiagnosisInfoPopupProps {
-    diagnosis: Diagnosis
+    diagnosis: Diagnosis | null
     onClose: () => void
 }
 
@@ -30,7 +20,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.diagnosis}</span>
+                        <span>{diagnosis?.diagnosis}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -40,7 +30,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.doctor}</span>
+                        <span>{diagnosis?.doctor}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -50,7 +40,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.date}</span>
+                        <span>{diagnosis?.date.toString()}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -60,7 +50,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.symptoms}</span>
+                        <span>{diagnosis?.symptoms}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -70,7 +60,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.treatment}</span>
+                        <span>{diagnosis?.treatment}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
@@ -80,7 +70,7 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{diagnosis.isApproved ? "Yes" : "No"}</span>
+                        <span>{diagnosis?.isApproved ? "Yes" : "No"}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row} ${styles.dip_info_strip_btns}`}>

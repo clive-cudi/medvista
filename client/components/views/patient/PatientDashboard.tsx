@@ -3,22 +3,20 @@ import styles from "@styles/components/views/patient/patientDashboard.module.scs
 import { DashboardTopNav } from "@/components";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
+import { useSession } from "next-auth/react";
+import { useTime } from "@/hooks";
+
+interface eventC {
+    title: string;
+    date: Date;
+    time: string;
+    location: string
+}
 
 export const PatientDashboard = (): JSX.Element => {
-    const [events, setEvents] = useState([
-        {
-            title: "Doctor's Appointment",
-            date: new Date(2021, 5, 1),
-            time: "10:00 AM",
-            location: "1234 Main St, New York, NY 10001"
-        },
-        {
-            title: "Doctor's Appointment",
-            date: new Date(2021, 5, 1),
-            time: "10:00 AM",
-            location: "1234 Main St, New York, NY 10001"
-        },
-    ]);
+    const [events, setEvents] = useState<eventC[]>([]);
+    const { getDayGreeting } = useTime();
+    const session = useSession();
 
 
     return (
@@ -30,7 +28,7 @@ export const PatientDashboard = (): JSX.Element => {
                     </div> */}
                     <DashboardTopNav />
                     <div className={styles.pd_greeting_banner}>
-                        <h2>Good Morning, <span>John Doe</span></h2>
+                        <h2>{getDayGreeting("Good")}, <span>{session.data?.user.name}</span></h2>
                     </div>
                 </div>
                 <div className={styles.pd_content_body}>
