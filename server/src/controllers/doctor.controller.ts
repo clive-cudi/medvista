@@ -60,7 +60,7 @@ const getPatientById = (req: Request, res: Response) => {
     User.findOne({id: id, usertype: "patient"}).then((user) => {
         if (user) {
             // remove personal information from patient
-            const { password, patient, ...include } = user;
+            const { password, patient, ...include } = user._doc;
             return res.status(200).json({
                 success: true,
                 message: "Patient found",
@@ -315,4 +315,57 @@ const revokeMedicalGlimpseRequest = (req: Request, res: Response) => {
     })
 }
 
-export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest };
+// search for a doctor by name
+const searchDoctorsByName = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    
+
+    const { name } = req.params;
+
+    User.find({usertype: "doctor", name: {$regex: name, $options: "i"}}).then((doctors) => {
+        if (doctors) {
+            return res.status(200).json({
+                success: true,
+                message: "Doctors found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                doctors: doctors.map((dt) => {
+                    const { password, doctor, ...include } = dt._doc;
+                    return include;
+                })
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "No doctors found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "no_doctors_found",
+                    debug: "No doctors found"
+                }
+            })
+        }
+    }).catch((err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: err
+            }
+        });
+    });
+}
+
+export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName };

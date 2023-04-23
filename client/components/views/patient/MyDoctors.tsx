@@ -30,10 +30,7 @@ export const MyDoctors = (): JSX.Element => {
     const { getMyDoctors } = PatientQueries(session);
     const [tableConfigActive, setTableConfigActive] = useState<TableConfigTypes>({
         headers: ["Doctor", "Specialty", "Location", "Phone", "Email"],
-        data: [
-            ["Dr. John Doe", "Cardiologist", "123 Main St, New York, NY 10001", "(123) 456-7890", ""],
-            ["Dr. Jane Doe", "Cardiologist", "123 Main St, New York, NY 10001", "(123) 456-7890", ""]
-        ],
+        data: [],
         identifiers: []
     });
     const [tableConfigInActive, setTableConfigInActive] = useState<TableConfigTypes>({
