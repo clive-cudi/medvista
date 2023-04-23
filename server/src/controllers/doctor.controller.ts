@@ -266,7 +266,7 @@ const revokeMedicalGlimpseRequest = (req: Request, res: Response) => {
                             code: "patient_not_found",
                             debug: "Patient not found"
                         }
-                    })
+                    });
                 }
             }).catch((patient_update_err) => {
                 return res.status(500).json({

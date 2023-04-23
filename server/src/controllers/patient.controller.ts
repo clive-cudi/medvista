@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { Diagnosis } from "../models/diagnosis.model";
+import { Doctor } from "../models/doctor.model";
 
 const getMedicalHistory = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -85,6 +86,7 @@ const getMedicalHistoryByID = (req: Request, res: Response) => {
             if (diagnosis_id.length > 0) {
                 Diagnosis.findOne({diagnosisId: id}).then((diagnosis) => {
                     return res.status(200).json({
+                        success: true,
                         message: "Medical history found",
                         usertoken: {
                             user: user,
@@ -98,6 +100,7 @@ const getMedicalHistoryByID = (req: Request, res: Response) => {
                     });
                 }).catch((diagnosis_find_err) => {
                     return res.status(500).json({
+                        success: false,
                         message: "Internal Server Error",
                         usertoken: {
                             user: null,
@@ -112,6 +115,7 @@ const getMedicalHistoryByID = (req: Request, res: Response) => {
                 });
             } else {
                 return res.status(404).json({
+                    success: false,
                     message: "Medical history not found",
                     usertoken: {
                         user: null,
@@ -125,6 +129,7 @@ const getMedicalHistoryByID = (req: Request, res: Response) => {
             }
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -138,6 +143,7 @@ const getMedicalHistoryByID = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -162,6 +168,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
     // check if all the fields are present
     if (!diagnosisId || !doctor || !patient || !date || !symptoms || !diagnosis || !treatment) {
         return res.status(400).json({
+            success: false,
             message: "Bad Request. All fields are required",
             usertoken: {
                 user: null,
@@ -195,6 +202,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
                 // update the doctor's pending approvals
                 User.findOneAndUpdate({id: doctor, usertype: "doctor"}, {$push: {"doctor.pendingApprovals": diagnosisId}}).then((doctor) => {
                     return res.status(200).json({
+                        success: true,
                         message: "Medical history created and pending approval",
                         usertoken: {
                             user: user,
@@ -208,6 +216,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
                     });
                 }).catch((doctor_update_err) => {
                     return res.status(500).json({
+                        success: false,
                         message: "Internal Server Error",
                         usertoken: {
                             user: null,
@@ -222,6 +231,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
                 });        
             }).catch((diagnosis_save_err) => {
                 return res.status(500).json({
+                    success: false,
                     message: "Internal Server Error",
                     usertoken: {
                         user: null,
@@ -236,6 +246,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -249,6 +260,7 @@ const createMedicalHistory = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -320,6 +332,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
                     // update the doctor's pending approvals
                     User.findOneAndUpdate({id: doctor, usertype: "doctor"}, {$push: {"doctor.pendingApprovals": diagnosisId}}).then((doctor) => {
                         return res.status(200).json({
+                            success: true,
                             message: "Medical history updated and pending approval",
                             usertoken: {
                                 user: user,
@@ -333,6 +346,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
                         });
                     }).catch((doctor_update_err) => {
                         return res.status(500).json({
+                            success: false,
                             message: "Internal Server Error",
                             usertoken: {
                                 user: null,
@@ -348,6 +362,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
                 }
             }).catch((diagnosis_update_err) => {
                 return res.status(500).json({
+                    success: false,
                     message: "Internal Server Error",
                     usertoken: {
                         user: null,
@@ -362,6 +377,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -375,6 +391,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -402,6 +419,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
 
             if (!diagnosisExists) {
                 return res.status(404).json({
+                    success: false,
                     message: "Medical history not found",
                     usertoken: {
                         user: null,
@@ -420,6 +438,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
                     // update the doctor's pending approvals
                     User.findOneAndUpdate({id: diagnosis.doctor, usertype: "doctor"}, {$push: {"doctor.pendingDeletions": id}}).then((doctor) => {
                         return res.status(200).json({
+                            success: true,
                             message: "Medical history flagged for deletion and pending approval",
                             usertoken: {
                                 user: user,
@@ -433,6 +452,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
                         });
                     }).catch((doctor_update_err) => {
                         return res.status(500).json({
+                            success: false,
                             message: "Internal Server Error",
                             usertoken: {
                                 user: null,
@@ -449,6 +469,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -462,6 +483,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -488,6 +510,7 @@ const getMyDoctors = (req: Request, res: Response) => {
                 // remove the password from the doctors
 
                 return res.status(200).json({
+                    success: true,
                     message: "Doctors found",
                     usertoken: {
                         user: user,
@@ -504,6 +527,7 @@ const getMyDoctors = (req: Request, res: Response) => {
                 });
             }).catch((doctors_find_err) => {
                 return res.status(500).json({
+                    success: false,
                     message: "Internal Server Error",
                     usertoken: {
                         user: null,
@@ -518,6 +542,7 @@ const getMyDoctors = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "User not found",
                 usertoken: {
                     user: null,
@@ -531,6 +556,7 @@ const getMyDoctors = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -556,6 +582,7 @@ const getPatientById = (req: Request, res: Response) => {
             // omit personal information
             const { password, patient, ...include } = user;
             return res.status(200).json({
+                success: true,
                 message: "Patient found",
                 usertoken: {
                     user: usertoken,
@@ -569,6 +596,7 @@ const getPatientById = (req: Request, res: Response) => {
             });
         } else {
             return res.status(404).json({
+                success: false,
                 message: "Patient not found",
                 usertoken: {
                     user: null,
@@ -582,6 +610,7 @@ const getPatientById = (req: Request, res: Response) => {
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
+            success: false,
             message: "Internal Server Error",
             usertoken: {
                 user: null,
@@ -594,6 +623,92 @@ const getPatientById = (req: Request, res: Response) => {
             }
         });
     });
+};
+
+const approveMedicalGlimpseRequest = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: patientId} = usertoken;
+
+    const { id: doctorId }  = req.body;
+
+    User.findOneAndUpdate({id: patientId, usertype: "patient"}, {
+        $pull: {
+            "patient.pendingGlimpse": doctorId
+        },
+        $addToSet: {
+            "patient.activeDoctors": doctorId,
+            "patient.doctors": doctorId
+        }
+    }).then((patient) => {
+        if (patient) {
+            // update the diagnosis whitelist
+            User.findOneAndUpdate({id: doctorId, usertype: "doctor"}, {
+                $pull: {
+                    "doctor.pendingMedicalGlimpseRequests": patientId
+                },
+                $addToSet: {
+                    "doctor.activePatients": patientId
+                }
+            }).then((doctor) => {
+                if (doctor) {
+                    return res.status(200).json({
+                        success: true,
+                        message: "Medical glimpse request approved",
+                        usertoken: {
+                            user: usertoken,
+                            token: usertoken.token
+                        },
+                        error: {
+                            status: false,
+                            code: null
+                        }
+                    })
+                }
+            }).catch((doctor_update_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal server error",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: doctor_update_err
+                    }
+                });
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Patient not found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "patient_not_found",
+                    debug: "Patient not found"
+                }
+            });
+        }
+    }).catch((patient_update_error) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+                user: usertoken,
+                token: usertoken.token
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: patient_update_error
+            }
+        });
+    })
 }
 
-export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById };
+export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest };

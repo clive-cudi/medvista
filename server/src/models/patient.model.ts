@@ -24,7 +24,9 @@ const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
     doctors: [String],
     diagnoses: [String],
     activeDoctors: [String],
+    // pending medical records access requests
     inActiveDoctors: [String],
+    // have no access to medical records
     archivedDoctors: [String],
     pendingGlimpse: [String],
 });

@@ -48,4 +48,10 @@ router.delete("/my-doctors/:id", verifyToken, patient_verify);
 // approve doctor request for viewing medical history
 router.post("/my-doctors/:id/approve", verifyToken, patient_verify);
 
+// get pending medical glimpse requests
+router.get("/my-doctors/glimpse-approvals", verifyToken, patient_verify);
+
+// deny medical glimpse to doctor request
+router.delete("/my-doctors/revoke-glimpse", verifyToken, patient_verify);
+
 export default router;
