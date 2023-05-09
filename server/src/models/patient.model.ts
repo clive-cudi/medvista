@@ -1,5 +1,6 @@
 import mongoose, { Model } from "mongoose";
 const Schema = mongoose.Schema;
+import { Appointment, appointmentSchema } from "./appointment.model";
 
 export interface Patient extends mongoose.Document {
     id: string;
@@ -10,6 +11,7 @@ export interface Patient extends mongoose.Document {
     inActiveDoctors: string[];
     archivedDoctors: string[];
     pendingGlimpse: string[];
+    appointments: Appointment[];
 }
 
 const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
@@ -29,6 +31,7 @@ const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
     // have no access to medical records
     archivedDoctors: [String],
     pendingGlimpse: [String],
+    appointments: [appointmentSchema]
 });
 
 const Patient = mongoose.model("Patient", patientSchema);

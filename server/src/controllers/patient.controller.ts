@@ -782,6 +782,10 @@ const searchPatient = (req: Request, res: Response) => {
             }
         });
     });
+};
+
+const bookAppointment = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
 }
 
 export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest, searchPatient };
