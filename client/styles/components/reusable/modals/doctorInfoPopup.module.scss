@@ -14,8 +14,9 @@
         row-gap: 10px;
         .dip_info_strip {
             display: flex;
-            height: 40px;
+            min-height: 40px;
             width: 400px;
+            height: fit-content;
             align-items: center;
             justify-content: flex-start;
             // border-bottom: 1px solid rgb(207, 207, 207);
@@ -77,6 +78,10 @@
                             background: var(--black-gradient);
                             color: white;
                         }
+                        &[data-elm-type = "add_btn"] {
+                            background: var(--blue-gradient);
+                            color: white;
+                        }
                         &:hover {
                             cursor: pointer;
                             transform: scale(1.02);
@@ -112,6 +117,7 @@
                 padding: 10px;
                 position: relative;
                 border-radius: 6px;
+                border-bottom: 0.5px solid rgba(225, 225, 251, 1);
                 .dip_info_result_col {
                     display: flex;
                     height: 100%;
@@ -132,11 +138,30 @@
                 }
                 &:hover {
                     cursor: pointer;
+                    box-shadow: 0 4px 20px -2px #e0e0e0;
                     .result_utils {
                         display: flex;
                     }
                 }
             }
+            textarea {
+                padding: 10px;
+                width: 100%;
+                resize: none;
+                height: 100px;
+                border-radius: 6px;
+                border: var(--default-border);
+                &:hover {
+                    border-color: black;
+                }
+            }
+        }
+        form {
+            display: flex;
+            height: fit-content;
+            width: fit-content;
+            flex-direction: column;
+            row-gap: 14px;
         }
     }
 }

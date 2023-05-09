@@ -44,7 +44,7 @@ export const SearchInput = ({ onChange, iconAlt, wrapperOnClick, resultsData, on
     }, [resultsData]);
     
 
-    useEffect(() => {console.log(selectedResult)}, [selectedResult])
+    // useEffect(() => {console.log(selectedResult)}, [selectedResult])
 
     return (
         <div className={styles.search_input_wrapper}>

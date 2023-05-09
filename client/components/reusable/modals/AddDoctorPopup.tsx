@@ -1,16 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useModal } from "@/hooks";
-import { IconBtn, RegularBtn } from "@/components/reusable";
+import { BookAppointmentPopup, IconBtn, RegularBtn } from "@/components/reusable";
 import { AiOutlinePlus } from "react-icons/ai";
 import { SearchInput } from "@/components/reusable";
 import styles from "@styles/components/reusable/modals/doctorInfoPopup.module.scss";
+import { PatientQueries } from "@/utils";
+import { useSession } from "next-auth/react";
+import { Doctor } from "@/types";
 
-export const AddDoctorPopup = (): JSX.Element => {
+interface AddDoctorPopup_Props {
+    bookAppointmentOnClick?: boolean
+}
+
+export const AddDoctorPopup = ({ bookAppointmentOnClick }: AddDoctorPopup_Props): JSX.Element => {
     // add search bar to search for doctors
     // add a table to display the results of the search
     // add a button to add the doctor to the patient's list of doctors
     const [searchQuery, setSearchQuery] = useState<string>("");
-    const { closeModal } = useModal();
+    const { closeModal, openModal } = useModal();
+    const session = useSession();
+    const { searchDoctor } = PatientQueries(session);
 
     const sampleResults = [
         {
@@ -34,7 +43,26 @@ export const AddDoctorPopup = (): JSX.Element => {
             id: "123"
         },
     ];
-    const [results, setResults] = useState([...sampleResults]);
+    const [results, setResults] = useState<Doctor[]>([]);
+
+    function submitSearchQuery() {
+        if (searchQuery) {
+            console.log(searchQuery)
+            searchDoctor(searchQuery).then((res) => {
+                setResults(res.doctors);
+            }).catch((err) => {
+                console.log(err);
+            })
+        }
+    }
+
+    function handleDoctorSearchResultClick(doctor: Doctor) {
+        // open another modal for booking an appointment
+        if (bookAppointmentOnClick) {
+            // modal
+            openModal(<BookAppointmentPopup targetDoctor={doctor} />)
+        }
+    }
 
     return (
         <div className={styles.doctorInfoPopup}>
@@ -48,24 +76,24 @@ export const AddDoctorPopup = (): JSX.Element => {
                     <SearchInput value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} resultsData={[...sampleResults]} onResultClick={(e, result) => {
                         // console.log(result);
                     }} enableSuggestions={false} />
-                    <RegularBtn data-elm-type={"search_btn"}>Search</RegularBtn>
+                    <RegularBtn data-elm-type={"search_btn"} onClick={() => {submitSearchQuery()}}>Search</RegularBtn>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.search_results_wrapper}`}>
-                    {results.length > 0 ? (
+                    {results?.length > 0 ? (
                         results.map((rslt, ix) => {
                             return (
-                                <div key={ix} className={styles.dip_info_result}>
+                                <div key={ix} className={styles.dip_info_result} onClick={() => {handleDoctorSearchResultClick(rslt)}}>
                                     <div className={styles.dip_info_result_col}>
-                                        <span>{rslt.label}</span>
+                                        <span>{rslt.name}</span>
                                     </div>
                                     <div className={styles.dip_info_result_col}>
-                                        <span>{rslt.label}</span>
+                                        <span>{rslt.specialty}</span>
                                     </div>
-                                    <div className={styles.result_utils}>
+                                    {/* <div className={styles.result_utils}>
                                         <span>
                                             <IconBtn></IconBtn>
                                         </span>
-                                    </div>
+                                    </div> */}
                                 </div>
                             )
                         })

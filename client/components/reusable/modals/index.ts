@@ -3,3 +3,4 @@ export { PopupModal } from "./PopupModal";
 export { DoctorInfoPopup } from "./DoctorInfoPopup";
 export { DiagnosisInfoPopup } from "./DiagnosisInfoPopup";
 export { AddDoctorPopup } from "./AddDoctorPopup";
+export { BookAppointmentPopup } from "./BookAppointmentPopup";

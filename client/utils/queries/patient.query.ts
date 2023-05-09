@@ -63,5 +63,14 @@ export const PatientQueries = (session: SessionContextValue) => {
             });
             return data;
         },
+        searchDoctor: async (query: string) => {
+            // console.log("Searching doctor: " + query);
+            const { data } = await api.get<API_res_model & {doctors: Doctor[]}>(`/doctor/search/${query}`, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            return data;
+        }
     };
 }

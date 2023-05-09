@@ -100,7 +100,7 @@ export const MyDoctors = (): JSX.Element => {
                             </span>
                             <span>
                                 <RegularBtn withIcon={{status: true, icon: <AiOutlinePlus />, orientation: "start"}} onClick={() => {
-                                    openModal(<AddDoctorPopup />);
+                                    openModal(<AddDoctorPopup bookAppointmentOnClick />);
                                 }}>Add a doctor</RegularBtn>
                             </span>
                         </div>
