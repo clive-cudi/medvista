@@ -11,7 +11,7 @@ export interface Patient extends mongoose.Document {
     inActiveDoctors: string[];
     archivedDoctors: string[];
     pendingGlimpse: string[];
-    appointments: Appointment[];
+    appointments: string[];
 }
 
 const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
@@ -31,7 +31,7 @@ const patientSchema = new Schema<Patient, Model<Patient>, Patient>({
     // have no access to medical records
     archivedDoctors: [String],
     pendingGlimpse: [String],
-    appointments: [appointmentSchema]
+    appointments: [String]
 });
 
 const Patient = mongoose.model("Patient", patientSchema);

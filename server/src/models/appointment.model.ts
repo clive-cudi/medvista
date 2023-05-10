@@ -5,9 +5,11 @@ export interface Appointment {
     appointmentId: string;
     patient: string;
     doctor: string;
-    date: Date
-    time: string
-    duration: number
+    date: Date;
+    time: string;
+    duration: number;
+    note: string;
+    _doc: any;
 }
 
 const appointmentSchema = new Schema<Appointment, Model<Appointment>, Appointment>({
@@ -31,10 +33,7 @@ const appointmentSchema = new Schema<Appointment, Model<Appointment>, Appointmen
         type: String,
         required: true
     },
-    duration: {
-        type: Number,
-        required: true
-    }
+    note: String
 }, {
     timestamps: true
 });

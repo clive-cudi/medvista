@@ -47,6 +47,21 @@ const register = (req: Request, res: Response) => {
             code: "password_mismatch",
           },
         });
+    }
+
+      if (usertype !== "doctor" && usertype !== "patient") {
+        return res.status(400).json({
+          success: false,
+          message: "Usertype should either be 'doctor' or 'patient'",
+          usertoken: {
+            user: null,
+            token: null,
+          },
+          error: {
+            status: true,
+            code: "invalid_usertype",
+          },
+        });
       }
     
     // check if user exists
@@ -80,7 +95,7 @@ const register = (req: Request, res: Response) => {
               name,
               id,
               [usertype === "patient" ? "doctors" : "patients"]: []
-            } 
+            }
           }
           const newUser = new User(newUserConstruct);
 

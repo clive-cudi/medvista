@@ -35,3 +35,7 @@ export const sendEmail = async (email: string, subject: string, text: string) =>
         return null;
     }
 };
+
+export function filterNonNullKeyValuePairs(obj: Object) {
+	return Object.fromEntries(Object.entries(obj).filter(([key, val]) => val !== null));
+}

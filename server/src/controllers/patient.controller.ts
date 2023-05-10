@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import { User } from "../models/user.model";
 import { Diagnosis } from "../models/diagnosis.model";
+import { Appointment } from "../models/appointment.model";
+import { v4 as uuid } from "uuid";
+import { filterNonNullKeyValuePairs } from "../helpers";
+import { DATE_CHOICE_REGEX, TIME_CHOICE_REGEX } from "../helpers/regex";
 
 const getMedicalHistory = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -572,7 +576,7 @@ const getMyDoctors = (req: Request, res: Response) => {
                     status: true,
                     code: "user_not_found"
                 }
-            })
+            });
         }
     }).catch((user_find_err) => {
         return res.status(500).json({
@@ -784,8 +788,531 @@ const searchPatient = (req: Request, res: Response) => {
     });
 };
 
-const bookAppointment = (req: Request, res: Response) => {
+const bookAppointment = async (req: Request, res: Response) => {
+    const { usertoken, date, doctorID, note, time } = req.body;
+    const { id: userID } = usertoken;
+    let appointmentExists: boolean = false;
+
+    if (!date || ! doctorID || !note || !time) {
+        return res.status(400).json({
+            message: "Bad Request. All fields are required",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "bad_request"
+            }
+        });
+    };
+
+    // check if the time given is valid
+    if (!TIME_CHOICE_REGEX.test(time)) {
+        return res.status(400).json({
+            message: "Invalid time format provided! => HH_HH",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "invalid_request"
+            }
+        });
+    }
+
+    if (!DATE_CHOICE_REGEX.test(date)) {
+        return res.status(400).json({
+            message: "Invalid date format provided! => YY-MM-DD",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "invalid_request"
+            }
+        });
+    }
+
+    await Appointment.find({
+        date: new Date(date).toISOString(),
+        time: time
+    }).then((existing_appointment) => {
+        if (existing_appointment.length > 0) {
+            appointmentExists = true;
+            return res.status(400).json({
+                success: false,
+                message: "Appointment slot already allocated",
+                usertoken: {
+                    user: null,
+                    token: null
+                },
+                error: {
+                    status: true,
+                    code: "invalid_request"
+                }
+            })
+        }
+    }).catch((appointment_find_err) => {
+        console.log(appointment_find_err);
+        return res.status(400).json({
+            success: false,
+            message: "Error while searching for appointment slot availability",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "invalid_request"
+            }
+        })
+    });
+
+    if (appointmentExists) {
+        return;
+    }
+
+    // check if the doctor exists
+    User.findOne({id: doctorID, usertype: "doctor"}).then((doctor) => {
+        if (doctor) {
+            // create a new appointment
+            const appointment_id = `at_${uuid()}`;
+            const newAppointment = new Appointment({
+                appointmentId: appointment_id,
+                date: date,
+                doctor: doctorID,
+                patient: userID,
+                time: time,
+                note: note
+            });
+            
+            newAppointment.save().then((new_appointment) => {
+                // add appointment reference to doctor and patient objects
+                doctor.doctor.appointments.push(new_appointment.appointmentId);
+                doctor.save().then((updated_doctor) => {
+                    // update patient ref
+                    User.findOneAndUpdate({id: userID, usertype: "patient"}, {
+                        $addToSet: {
+                            "patient.appointments": new_appointment.appointmentId
+                        }
+                    }).then((updated_patient) => {
+                        return res.status(200).json({
+                            success: true,
+                            message: `Added appointment ${new_appointment.appointmentId} to doctor: ${updated_doctor.name} and patient: ${updated_patient?.name} successfully`,
+                            usertoken: {
+                                user: usertoken,
+                                token: usertoken.token
+                            },
+                            appointment: new_appointment._doc
+                        });
+                    }).catch((patient_update_err) => {
+                        return res.status(500).json({
+                            success: false,
+                            message: "Internal Server Error",
+                            usertoken: {
+                                user: null,
+                                token: null
+                            },
+                            error: {
+                                status: true,
+                                code: "internal_server_error",
+                                debug: patient_update_err
+                            }
+                        });
+                    })
+                }).catch((doctor_update_err) => {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Internal Server Error",
+                        usertoken: {
+                            user: null,
+                            token: null
+                        },
+                        error: {
+                            status: true,
+                            code: "internal_server_error",
+                            debug: doctor_update_err
+                        }
+                    });
+                })
+            }).catch((new_appointment_creation_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: new_appointment_creation_err
+                    }
+                });
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "No Doctor found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "no_doctor_found",
+                    debug: "No doctor found"
+                }
+            })
+        }
+    }).catch((doctor_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: doctor_find_err
+            }
+        });
+    })
+};
+
+const updateAppointment = (req: Request, res: Response) => {
+    const { usertoken, date, note, time } = req.body;
+    const { id: userID, usertype } = usertoken;
+
+    const { id: appointmentId } = req.params;
+
+    const appointment_template = {
+        date: date ?? null,
+        note: note ?? null,
+        time: time ?? null
+    };
+
+    console.log({appointmentId: appointmentId, [usertype]: userID})
+
+    Appointment.findOneAndUpdate({appointmentId: appointmentId, [usertype]: userID}, {
+        $set: filterNonNullKeyValuePairs(appointment_template)
+    }).then((updated_appointment) => {
+        console.log(updated_appointment);
+        if (updated_appointment) {
+            return res.status(200).json({
+                success: true,
+                message: `updated appointment ${updated_appointment.appointmentId} to doctor: ${updated_appointment.doctor} and patient: ${updated_appointment.patient} successfully`,
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                appointment: updated_appointment._doc
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Target Appointment not found",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "appointment_not_found",
+                    debug: "Appointment not found"
+                }
+            });
+        }
+    }).catch((appointment_update_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: appointment_update_err
+            }
+        });
+    })
+};
+
+const removeAppointment = (req: Request, res: Response) => {
     const { usertoken } = req.body;
+    const { id: userID} = usertoken;
+
+    const { id: appointmentId } = req.params;
+
+    Appointment.findOneAndDelete({appointmentId: appointmentId}).then((deleted_appointment_result) => {
+        // update appointment refs in doctor and patient
+        if (deleted_appointment_result) {
+            User.findOneAndUpdate({id: deleted_appointment_result.patient, usertype: "patient"}, {
+                $pullAll: {
+                    "patient.appointments": [deleted_appointment_result.appointmentId]
+                }
+            }).then((updated_patient) => {
+                User.findOneAndUpdate({id: deleted_appointment_result.doctor, usertype: "doctor"}, {
+                    $pullAll: {
+                        "doctor.appointments": [deleted_appointment_result.appointmentId]
+                    }
+                }).then((updated_doctor) => {
+                    console.log(updated_doctor)
+                    return res.status(200).json({
+                        success: true,
+                        message: `Successfully unscheduled appointment with ID: ${deleted_appointment_result.appointmentId}`,
+                        usertoken: {
+                            user: usertoken,
+                            token: usertoken.token
+                        },
+                        appointment: deleted_appointment_result,
+                        error: {
+                            status: false,
+                            code: null,
+                            debug: null
+                        }
+                    });
+                }).catch((doctor_update_err) => {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Internal Server Error",
+                        usertoken: {
+                            user: null,
+                            token: null
+                        },
+                        error: {
+                            status: true,
+                            code: "internal_server_error",
+                            debug: doctor_update_err
+                        }
+                    });
+                });
+            }).catch((patient_update_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: patient_update_err
+                    }
+                });
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "Target Appointment not found. No reference to appointment",
+                usertoken: {
+                    user: usertoken,
+                    token: usertoken.token
+                },
+                error: {
+                    status: true,
+                    code: "appointment_not_found",
+                    debug: "Appointment not found"
+                }
+            });
+        }
+    }).catch((appointment_update_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: appointment_update_err
+            }
+        });
+    })
+};
+
+const getAppointments = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: userID, usertype } = usertoken;
+
+    User.findOne({id: userID}).then((user) => {
+        // get appointment
+        if (user) {
+            const appointments = usertype === 'doctor' ? user.doctor.appointments : user.patient.appointments;
+
+            Appointment.find({appointmentId: {
+                $in: appointments
+            }}).then((found_appointments) => {
+                return res.status(200).json({
+                    success: true,
+                    message: "Found Appointments",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    appointments: found_appointments,
+                    error: {
+                        status: false,
+                        code: null,
+                        debug: null
+                    }
+                });
+            }).catch((appointments_find_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: appointments_find_err
+                    }
+                });
+            })
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+                usertoken: {
+                    user: null,
+                    token: null
+                },
+                error: {
+                    status: true,
+                    code: "user_not_found"
+                }
+            });
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    })
+};
+
+const getAppointmentByID = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: userID, usertype } = usertoken;
+
+    const { id: appointment_id } = req.params;
+
+    User.findOne({id: userID}).then((user) => {
+        if (user) {
+            const appointments = usertype === 'doctor' ? user.doctor.appointments : user.patient.appointments;
+            
+            if (appointments.includes(appointment_id)) {
+                // appointment belongs to the dang user
+                // retrieve appointment
+                Appointment.findOne({appointmentId: appointment_id}).then((found_appointment) => {
+                    if (found_appointment) {
+                        return res.status(200).json({
+                            success: true,
+                            message: "Found Appointment",
+                            usertoken: {
+                                user: usertoken,
+                                token: usertoken.token
+                            },
+                            appointments: found_appointment,
+                            error: {
+                                status: false,
+                                code: null,
+                                debug: null
+                            }
+                        });
+                    } else {
+                        return res.status(404).json({
+                            success: false,
+                            message: "Appointment not found",
+                            usertoken: {
+                                user: null,
+                                token: null
+                            },
+                            error: {
+                                status: true,
+                                code: "appointment_not_found"
+                            }
+                        })
+                    }
+                }).catch((appointment_find_err) => {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Internal Server Error",
+                        usertoken: {
+                            user: null,
+                            token: null
+                        },
+                        error: {
+                            status: true,
+                            code: "internal_server_error",
+                            debug: appointment_find_err
+                        }
+                    });
+                })
+            } else {
+                return res.status(403).json({
+                    message: "Not Authorized to view appointment or the appointment wasn't found",
+                    usertoken: {
+                        user: usertoken,
+                        token: usertoken.token
+                    },
+                    error: {
+                        status: true,
+                        code: "not_authorized_or_found"
+                    }
+                });
+            }
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+                usertoken: {
+                    user: null,
+                    token: null
+                },
+                error: {
+                    status: true,
+                    code: "user_not_found"
+                }
+            })
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    })
 }
 
-export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest, searchPatient };
+export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest, searchPatient, bookAppointment, updateAppointment, removeAppointment, getAppointments, getAppointmentByID };

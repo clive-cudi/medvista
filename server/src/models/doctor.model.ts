@@ -14,7 +14,7 @@ export interface Doctor extends mongoose.Document {
     inActivePatients: string[];
     archivedPatients: string[];
     pendingMedicalGlimpseRequests: string[];
-    appointments: Appointment[]
+    appointments: string[]
 }
 
 const doctorSchema = new Schema<Doctor, Model<Doctor>, Doctor>({
@@ -26,10 +26,7 @@ const doctorSchema = new Schema<Doctor, Model<Doctor>, Doctor>({
         type: String,
         required: true
     },
-    speciality: {
-        type: String,
-        required: true
-    },
+    speciality: String,
     profilePicture: String,
     patients: [String],
     // diagnosis approval requests
@@ -40,7 +37,7 @@ const doctorSchema = new Schema<Doctor, Model<Doctor>, Doctor>({
     inActivePatients: [String],
     archivedPatients: [String],
     pendingMedicalGlimpseRequests: [String],
-    appointments: [appointmentSchema]
+    appointments: [String]
 });
 
 const Doctor = mongoose.model("Doctor", doctorSchema);

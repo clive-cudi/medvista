@@ -1,7 +1,21 @@
 import { Router } from "express";
 const router = Router();
 import { verifyToken, patient_verify } from "../middleware";
-import { getMyDoctors, createMedicalHistory, deleteMedicalHistory, getMedicalHistory, getMedicalHistoryByID, getPatientById, updateMedicalHistory, searchPatient } from "../controllers/patient.controller";
+import {
+    getMyDoctors,
+    createMedicalHistory,
+    deleteMedicalHistory,
+    getMedicalHistory,
+    getMedicalHistoryByID,
+    getPatientById,
+    updateMedicalHistory,
+    searchPatient,
+    bookAppointment,
+    updateAppointment,
+    removeAppointment,
+    getAppointments,
+    getAppointmentByID
+} from "../controllers/patient.controller";
 
 // get patient profile by id
 router.get("/profile/:id", verifyToken, getPatientById);
@@ -22,19 +36,19 @@ router.post("/medical-history/:id", verifyToken, patient_verify, updateMedicalHi
 router.delete("/medical-history/:id", verifyToken, patient_verify, deleteMedicalHistory);
 
 // get all appointments
-router.get("/appointments", verifyToken, patient_verify);
+router.get("/appointments", verifyToken, getAppointments);
 
 // get appointment by id
-router.get("/appointments/:id", verifyToken, patient_verify);
+router.get("/appointments/:id", verifyToken, getAppointmentByID);
 
 // create appointment
-router.post("/appointments", verifyToken, patient_verify);
+router.post("/appointments", verifyToken, patient_verify, bookAppointment);
 
 // update appointment
-router.post("/appointments/:id", verifyToken, patient_verify);
+router.post("/appointments/:id", verifyToken, updateAppointment);
 
 // delete appointment
-router.delete("/appointments/:id", verifyToken, patient_verify);
+router.delete("/appointments/:id", verifyToken, removeAppointment);
 
 // get my doctors
 router.get("/my-doctors", verifyToken, patient_verify, getMyDoctors);
