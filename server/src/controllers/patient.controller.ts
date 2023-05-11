@@ -890,11 +890,11 @@ const searchPatient = (req: Request, res: Response) => {
 };
 
 const bookAppointment = async (req: Request, res: Response) => {
-    const { usertoken, date, doctorID, note, time } = req.body;
+    const { usertoken, date, doctorID, note, time, title } = req.body;
     const { id: userID } = usertoken;
     let appointmentExists: boolean = false;
 
-    if (!date || ! doctorID || !note || !time) {
+    if (!date || ! doctorID || !note || !time || !title) {
         return res.status(400).json({
             success: false,
             message: "Bad Request. All fields are required",
@@ -987,6 +987,7 @@ const bookAppointment = async (req: Request, res: Response) => {
             const appointment_id = `at_${uuid()}`;
             const newAppointment = new Appointment({
                 appointmentId: appointment_id,
+                title: title,
                 date: date,
                 doctor: doctorID,
                 patient: userID,
@@ -1111,7 +1112,7 @@ const bookAppointment = async (req: Request, res: Response) => {
 };
 
 const updateAppointment = (req: Request, res: Response) => {
-    const { usertoken, date, note, time } = req.body;
+    const { usertoken, date, note, time, title } = req.body;
     const { id: userID, usertype } = usertoken;
 
     const { id: appointmentId } = req.params;
@@ -1119,7 +1120,8 @@ const updateAppointment = (req: Request, res: Response) => {
     const appointment_template = {
         date: date ?? null,
         note: note ?? null,
-        time: time ?? null
+        time: time ?? null,
+        title: title ?? null
     };
 
     console.log({appointmentId: appointmentId, [usertype]: userID})
@@ -1127,7 +1129,6 @@ const updateAppointment = (req: Request, res: Response) => {
     Appointment.findOneAndUpdate({appointmentId: appointmentId, [usertype]: userID}, {
         $set: filterNonNullKeyValuePairs(appointment_template)
     }).then((updated_appointment) => {
-        console.log(updated_appointment);
         if (updated_appointment) {
             return res.status(200).json({
                 success: true,
@@ -1193,7 +1194,6 @@ const removeAppointment = (req: Request, res: Response) => {
                         "doctor.appointments": [deleted_appointment_result.appointmentId]
                     }
                 }).then((updated_doctor) => {
-                    console.log(updated_doctor)
                     return res.status(200).json({
                         success: true,
                         message: `Successfully unscheduled appointment with ID: ${deleted_appointment_result.appointmentId}`,

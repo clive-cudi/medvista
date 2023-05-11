@@ -52,10 +52,13 @@ export const LoginForm = (): JSX.Element => {
 
                 const session = await getSession();
 
-                if (session?.user.usertype === "doctor") {
-                    router.push("/doctor");
-                } else if (session?.user.usertype === "patient") {
+                
+                if (session?.user.usertype === "patient") {
                     router.push("/patient");
+                    return
+                } else if (session?.user.usertype === "doctor") {
+                    router.push("/doctor");
+                    return
                 } else {
                     router.push("/");
                 }

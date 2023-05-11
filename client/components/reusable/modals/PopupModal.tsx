@@ -58,7 +58,7 @@ export function PopupModal({type = "error", message, redirectUrl, icon, title, b
                     }}>{btn_label ? btn_label : `Ok, Try Again`}</button> */}
                     {
                         show_btn ?
-                            <RegularBtn label={btn_label ? btn_label : `Ok, Try Again`} onClick={() => {
+                            <RegularBtn label={btn_label ? btn_label : (type == "error" ? `Ok, Try Again` : "Ok")} onClick={() => {
                                 redirectUrl && redirect(redirectUrl);
                                 if (disable_close_btn !== true){
                                     closeModal()

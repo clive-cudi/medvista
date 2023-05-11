@@ -1,30 +1,45 @@
 import React, { useState, useEffect } from "react";
 import styles from "@styles/components/views/patient/patientDashboard.module.scss";
-import { DashboardTopNav } from "@/components";
+import { DashboardTopNav, AppointmentInfoPopup } from "@/components";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useSession } from "next-auth/react";
 import { useTime, useAppointmentStore } from "@/hooks";
 import { parseTimeString } from "@/utils";
+import { useModal } from "@/hooks";
+import { Appointment } from "@/types";
 
-interface eventC {
+type event_type = "appointment";
+
+interface eventC<T> {
     title: string;
     date: Date;
     time: string;
     location: string
+    type: event_type
+    data: T
 }
 
 export const PatientDashboard = (): JSX.Element => {
-    const [events, setEvents] = useState<eventC[]>([]);
+    const [events, setEvents] = useState<eventC<Appointment>[]>([]);
     const { getDayGreeting } = useTime();
     const session = useSession();
     const { appointments } = useAppointmentStore();
+    const { openModal } = useModal();
 
     useEffect(() => {
         setEvents(() => {
-            return appointments.map((_at) => ({title: "Appointment", date: _at.date, time: _at.time, location: ""}))
+            return appointments.map((_at) => ({title: "Appointment", date: _at.date, time: _at.time, location: "", type: "appointment", data: _at}))
         })
-    }, [appointments])
+    }, [appointments]);
+
+    function handleEventClick(ev: event_type, appnt_?: Appointment) {
+        switch (ev) {
+            case "appointment":
+                openModal(<AppointmentInfoPopup appointment={appnt_ ?? null} onClose={() => {}} />)
+                return;
+        }
+    }
 
     return (
         <div className={styles.patientDashboard}>
@@ -53,7 +68,9 @@ export const PatientDashboard = (): JSX.Element => {
                                             {events.length > 0 ?
                                                 events.map((event, index) => {
                                                     return (
-                                                        <li key={index}>
+                                                        <li key={index} onClick={() => {
+                                                            handleEventClick("appointment", event.data);
+                                                        }}>
                                                             <div className={styles.pd_content_body_calendar_events_list_item}>
                                                                 <div className={styles.pd_content_body_calendar_events_list_item_title}>
                                                                     <h4>{event.title}</h4>

@@ -3,6 +3,7 @@ const Schema = mongoose.Schema;
 
 export interface Appointment {
     appointmentId: string;
+    title: string;
     patient: string;
     doctor: string;
     date: Date;
@@ -14,6 +15,10 @@ export interface Appointment {
 
 const appointmentSchema = new Schema<Appointment, Model<Appointment>, Appointment>({
     appointmentId: {
+        type: String,
+        required: true
+    },
+    title: {
         type: String,
         required: true
     },

@@ -5,23 +5,32 @@ import { useState } from "react";
 import { PatientQueries } from "@/utils";
 import { useSession } from "next-auth/react";
 
-interface BookAppointmentPopup {
-    targetDoctor: Doctor
+interface UpdateAppointmentPopup_Props {
+    appointment_id: string;
+    initialValues: {
+        title: string;
+        date: Date;
+        time: string;
+        note: string;
+    };
+    targetDoctor: Doctor | null
 }
 
 interface appointment_ {
-    doctorID: string;
     date: string;
     time: string;
     note: string;
-    title: string;
 }
 
-export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JSX.Element => {
-    const [appointment, setAppointment] = useState<appointment_>({
-        doctorID: targetDoctor.id,
-        date: "",
-        time: "8_10",
+export const UpdateAppointmentPopup = ({appointment_id, initialValues, targetDoctor }: UpdateAppointmentPopup_Props): JSX.Element => {
+    const [appointment, setAppointment] = useState<{
+        title: string;
+        date: Date;
+        time: string;
+        note: string;
+    }>({
+        date: initialValues.date,
+        time: "",
         note: "",
         title: ""
     });
@@ -48,7 +57,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
     ];
     const [message, setMessage] = useState<{message: string, type: "info" | "error"}>({"message": "", type: "info"});
     const session = useSession();
-    const { createAppointment } = PatientQueries(session);
+    const { updateAppointment } = PatientQueries(session);
 
     function updateInputs(key: keyof appointment_, value: string) {
         if (key && value) {
@@ -63,24 +72,21 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
         console.log(appointment);
         // clear message
         setMessage({message: "", type: "info"});
-        if ([...Object.values(appointment)].every(Boolean)) {
-            // submit
-            createAppointment(appointment).then((res) => {
-                console.log(res);
-                if (res.success === true) {
-                    // successfully created appointment
-                    setMessage({message: res.message, type: "info"});
-                    
-                } else {
-                    setMessage({message: res.message, type: "error"})
-                }
-            }).catch((err) => {
-                console.log(err);
-                setMessage({message: err?.response?.data?.message ?? "An error occurred while creating an appointment. Please try again...", type: "error"})
-            })
-        } else {
-            setMessage({message: "Please fill in all details", type: "error"});
-        }
+        // submit
+        console.log(appointment);
+        updateAppointment(appointment_id, appointment).then((res) => {
+            console.log(res);
+            if (res.success === true) {
+                // successfully updated appointment
+                setMessage({message: res.message, type: "info"});
+                
+            } else {
+                setMessage({message: res.message, type: "error"})
+            }
+        }).catch((err) => {
+            console.log(err);
+            setMessage({message: err?.response?.data?.message ?? "An error occurred while updating the appointment. Please try again...", type: "error"})
+        })
     }
 
     return (
@@ -88,7 +94,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
             <div className={styles.dip_content}>
                 <div className={styles.dip_info_strip}>
                     <div className={styles.dip_info_strip_col}>
-                        <h4>Book appointment</h4>
+                        <h4>Update appointment</h4>
                     </div>
                 </div>
                 <form onSubmit={(e) => {e.preventDefault()}}>
@@ -97,7 +103,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                             <h4>Doctor: </h4>
                         </div>
                         <div className={styles.dip_info_strip_col}>
-                            <InputDiv type="text" onChange={(e) => {}} placeholder="Doctor's name" inputArgs={{disabled: true, value: targetDoctor.name}} />
+                            <InputDiv type="text" onChange={(e) => {}} placeholder="Doctor's name" inputArgs={{disabled: true, value: targetDoctor?.name}} />
                         </div>
                     </div>
                     <div className={styles.dip_info_strip}>
@@ -105,7 +111,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                             <h4>Title: </h4>
                         </div>
                         <div className={styles.dip_info_strip_col}>
-                            <InputDiv type="text" onChange={(e) => {updateInputs("title", e.target.value)}} placeholder="Appointment title/label" />
+                            <InputDiv type="text" onChange={(e) => {}} placeholder="Appointment title" inputArgs={{disabled: false, defaultValue: initialValues.title}} />
                         </div>
                     </div>
                     <div className={styles.dip_info_strip}>
@@ -113,14 +119,9 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                             <h4>Date: </h4>
                         </div>
                         <div className={styles.dip_info_strip_col}>
-                            <InputDiv type="date" onChange={(e) => {updateInputs("date", e.target.value)}} placeholder="Appointment date" />
+                            <InputDiv type="date" onChange={(e) => {updateInputs("date", e.target.value)}} inputArgs={{defaultValue: new Date(initialValues.date).toISOString()}} placeholder="Appointment date" />
                         </div>
                     </div>
-                    {/* <div className={styles.dip_info_strip}>
-                        <div className={styles.dip_info_strip_col}>
-                            <button data-elm-type={"view_available_dates_btn"}>See available dates</button>
-                        </div>
-                    </div> */}
                     <div className={styles.dip_info_strip}>
                         <div className={styles.dip_info_strip_col}>
                             <h4>Time: </h4>
@@ -128,7 +129,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                         <div className={styles.dip_info_strip_col}>
                             {/* <InputDiv type="text" onChange={(e) => {updateInputs("time", e.target.value)}} placeholder="Appointment time" /> */}
                             {/* <InputTime /> */}
-                            <InputSelect options={appointment_time_slots} onChange={(e) => {updateInputs("time", e.target.value)}} />
+                            <InputSelect options={appointment_time_slots} defaultOption={appointment_time_slots.find((slot) => slot.value === initialValues.time)} onChange={(e) => {updateInputs("time", e.target.value)}} />
                         </div>
                     </div>
                     <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column}`}>
@@ -136,7 +137,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                             <h4>Doctors note: </h4>
                         </div>
                         <div className={styles.dip_info_strip_col}>
-                            <textarea onChange={(e) => {updateInputs("note", e.target.value)}} placeholder="Note to pass to the doctor..." />
+                            <textarea onChange={(e) => {updateInputs("note", e.target.value)}} defaultValue={initialValues.note} placeholder="Note to pass to the doctor..." />
                         </div>
                     </div>
                     <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
@@ -145,7 +146,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                     <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
                         <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
                             {/* data */}
-                            <button data-elm-type={"add_btn"} type="submit" onClick={handleSubmit}>Book Appointment</button>
+                            <button data-elm-type={"add_btn"} type="submit" onClick={handleSubmit}>Update Appointment</button>
                         </div>
                     </div>
                 </form>

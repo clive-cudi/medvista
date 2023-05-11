@@ -81,6 +81,7 @@ export interface Diagnosis {
 }
 
 export interface Appointment {
+    title: string;
     appointmentId: string;
     patient: string;
     doctor: string;
