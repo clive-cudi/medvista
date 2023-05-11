@@ -5,6 +5,8 @@ import { Appointment } from "../models/appointment.model";
 import { v4 as uuid } from "uuid";
 import { filterNonNullKeyValuePairs } from "../helpers";
 import { DATE_CHOICE_REGEX, TIME_CHOICE_REGEX } from "../helpers/regex";
+import { Doctor } from "../models/doctor.model";
+import { UserType } from "../models/user.model";
 
 const getMedicalHistory = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -17,6 +19,7 @@ const getMedicalHistory = (req: Request, res: Response) => {
 
             Diagnosis.find({diagnosisId: {$in: diagnoses_ids}}).then((diagnoses) => {
                 return res.status(200).json({
+                    success: true,
                     message: "Medical history found",
                     usertoken: {
                         user: user,
@@ -30,6 +33,7 @@ const getMedicalHistory = (req: Request, res: Response) => {
                 });
             }).catch((diagnoses_find_err) => {
                 return res.status(500).json({
+                    success: false,
                     message: "Internal Server Error",
                     usertoken: {
                         user: null,
@@ -289,6 +293,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
     // check if all the fields are present
     if (!diagnosisId || !doctor || !patient || !date || !symptoms || !diagnosis || !treatment) {
         return res.status(400).json({
+            success: false,
             message: "Bad Request. All fields are required",
             usertoken: {
                 user: null,
@@ -308,6 +313,7 @@ const updateMedicalHistory = (req: Request, res: Response) => {
 
             if (!diagnosisExists) {
                 return res.status(404).json({
+                    success: false,
                     message: "Medical history not found",
                     usertoken: {
                         user: null,
@@ -501,7 +507,7 @@ const deleteMedicalHistory = (req: Request, res: Response) => {
     });
 };
 
-const getMyDoctors = (req: Request, res: Response) => {
+const getMyDoctorsIDs = (req: Request, res: Response) => {
     const { usertoken } = req.body;
     const { id: userId } = usertoken;
 
@@ -594,6 +600,101 @@ const getMyDoctors = (req: Request, res: Response) => {
         });
     });
 };
+
+const getMyDoctors = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: userId } = usertoken;
+
+    User.findOne({id: userId, usertype: "patient"}).then((user) => {
+        if (user) {
+            // const doctors = user.patient.doctors;
+            const activeDoctors = user.patient.activeDoctors;
+            const inActiveDoctors = user.patient.inActiveDoctors;
+            const archivedDoctors = user.patient.archivedDoctors;
+            type doctorStatus = "active" | "inactive" | "archived";
+            // doctors: {id: string, status: "active" | "inactive" | "archived"}[]
+            const doctors = [...activeDoctors.map((a_doc) => ({id: a_doc, status: "active"})), ...inActiveDoctors.map((i_doc) => ({id: i_doc, status: "inactive"})), ...archivedDoctors.map((ar_doc) => ({id: ar_doc, status: "archived"}))];
+
+            User.find({id: {$in: doctors.map((doc) => doc.id)}, usertype: "doctor"}).then((found_doctors) => {
+                // remove the password from the doctors
+                const doctorStatusConstruct: {[key: string]: UserType[]} = {
+                  active: [],
+                  inactive: [],
+                  archived: []  
+                };
+
+                for (let i = 0; i < found_doctors.length; i++) {
+                    const targetDoctor = doctors.find((dctr) => dctr.id === found_doctors[i].id);
+                    const { doctor, password, ...doc } = {...found_doctors[i]._doc, doctor: {}, password: "", specialty: found_doctors[i].doctor.speciality};
+                    
+                    if (targetDoctor) {
+                        doctorStatusConstruct[targetDoctor.status] = [...doctorStatusConstruct[targetDoctor.status], doc];
+                    }
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    message: "Doctors found",
+                    usertoken: {
+                        user: user,
+                        token: usertoken.token
+                    },
+                    error: {
+                        status: false,
+                        code: null
+                    },
+                    // doctors: doctors.map((doc) => {
+                    //     const { password, doctor, ...allowedData } = doc._doc;
+                    //     const { specialty } = doctor;
+                    //     return {...allowedData, doctor: { specialty }};
+                    // })
+                    doctors: doctorStatusConstruct
+                });
+            }).catch((doctors_find_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: doctors_find_err
+                    }
+                });
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+                usertoken: {
+                    user: null,
+                    token: null
+                },
+                error: {
+                    status: true,
+                    code: "user_not_found"
+                }
+            });
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    });
+}
 
 const getPatientById = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -795,6 +896,7 @@ const bookAppointment = async (req: Request, res: Response) => {
 
     if (!date || ! doctorID || !note || !time) {
         return res.status(400).json({
+            success: false,
             message: "Bad Request. All fields are required",
             usertoken: {
                 user: null,
@@ -810,6 +912,7 @@ const bookAppointment = async (req: Request, res: Response) => {
     // check if the time given is valid
     if (!TIME_CHOICE_REGEX.test(time)) {
         return res.status(400).json({
+            success: false,
             message: "Invalid time format provided! => HH_HH",
             usertoken: {
                 user: null,
@@ -824,6 +927,7 @@ const bookAppointment = async (req: Request, res: Response) => {
 
     if (!DATE_CHOICE_REGEX.test(date)) {
         return res.status(400).json({
+            success: false,
             message: "Invalid date format provided! => YY-MM-DD",
             usertoken: {
                 user: null,
@@ -892,11 +996,34 @@ const bookAppointment = async (req: Request, res: Response) => {
             newAppointment.save().then((new_appointment) => {
                 // add appointment reference to doctor and patient objects
                 doctor.doctor.appointments.push(new_appointment.appointmentId);
+                console.log("checks.....")
+                if (!doctor.doctor.patients.includes(userID)) {
+                    doctor.doctor.patients.push(userID);
+                }
+                if (!doctor.doctor.activePatients.includes(userID)) {
+                    doctor.doctor.activePatients.push(userID);
+                }
+                if (doctor.doctor.inActivePatients.includes(userID)) {
+                    // remove from inactive patients
+                    doctor.doctor.inActivePatients = [...doctor.doctor.inActivePatients].filter((target_patient_id) => target_patient_id !== userID)
+                }
+                if (doctor.doctor.archivedPatients.includes(userID)) {
+                    // remove from inactive patients
+                    doctor.doctor.archivedPatients = [...doctor.doctor.archivedPatients].filter((target_patient_id) => target_patient_id !== userID)
+                }
+                console.log("saving")
                 doctor.save().then((updated_doctor) => {
                     // update patient ref
+                    console.log("SAVED")
                     User.findOneAndUpdate({id: userID, usertype: "patient"}, {
                         $addToSet: {
-                            "patient.appointments": new_appointment.appointmentId
+                            "patient.appointments": new_appointment.appointmentId,
+                            "patient.doctors": doctor.id,
+                            "patient.activeDoctors": doctor.id
+                        },
+                        $pullAll: {
+                            "patient.inActiveDoctors": [doctor.id],
+                            "patient.archivedDoctors": [doctor.id]
                         }
                     }).then((updated_patient) => {
                         return res.status(200).json({
@@ -1056,7 +1183,11 @@ const removeAppointment = (req: Request, res: Response) => {
         if (deleted_appointment_result) {
             User.findOneAndUpdate({id: deleted_appointment_result.patient, usertype: "patient"}, {
                 $pullAll: {
-                    "patient.appointments": [deleted_appointment_result.appointmentId]
+                    "patient.appointments": [deleted_appointment_result.appointmentId],
+                    "patient.activeDoctors": [deleted_appointment_result.doctor]
+                },
+                $addToSet: {
+                    "patient.inActiveDoctors": deleted_appointment_result.doctor
                 }
             }).then((updated_patient) => {
                 User.findOneAndUpdate({id: deleted_appointment_result.doctor, usertype: "doctor"}, {
@@ -1235,7 +1366,7 @@ const getAppointmentByID = (req: Request, res: Response) => {
                                 user: usertoken,
                                 token: usertoken.token
                             },
-                            appointments: found_appointment,
+                            appointment: found_appointment,
                             error: {
                                 status: false,
                                 code: null,
@@ -1315,4 +1446,4 @@ const getAppointmentByID = (req: Request, res: Response) => {
     })
 }
 
-export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getPatientById, approveMedicalGlimpseRequest, searchPatient, bookAppointment, updateAppointment, removeAppointment, getAppointments, getAppointmentByID };
+export { getMedicalHistory, getMedicalHistoryByID, createMedicalHistory, updateMedicalHistory, deleteMedicalHistory, getMyDoctors, getMyDoctorsIDs, getPatientById, approveMedicalGlimpseRequest, searchPatient, bookAppointment, updateAppointment, removeAppointment, getAppointments, getAppointmentByID };

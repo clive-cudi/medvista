@@ -1,6 +1,6 @@
 import { api } from "../helpers";
 import { SessionContextValue } from "next-auth/react";
-import { API_res_model, Diagnosis, Doctor, Patient } from "@/types";
+import { API_res_model, Appointment, Diagnosis, Doctor, Patient } from "@/types";
 
 export const PatientQueries = (session: SessionContextValue) => {
     const { data: session_data } = session;
@@ -71,6 +71,43 @@ export const PatientQueries = (session: SessionContextValue) => {
                 }
             });
             return data;
+        },
+        createAppointment: async (data: any) => {
+            const { data: res } = await api.post<API_res_model & {appointment: Appointment}>(`/patient/appointments`, data, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            return res;
+        },
+        getAllAppointments: async () => {
+            const { data } = await api.get<API_res_model & {appointments: Appointment[]}>(`/patient/appointments`, {
+                headers: {
+                    Authorization: token
+                }
+            });
+            return data;
+        },
+        getAppointmentByID: async (id: string) => {
+            return (await api.get<API_res_model & {appointment: Appointment}>(`/patient/appointments/${id}`, {
+                headers: {
+                    Authorization: token
+                }
+            })).data;
+        },
+        updateAppointment: async (id: string, data: {}) => {
+            return (await api.post<API_res_model & {appointment: Appointment}>(`/patient/appointments/${id}`, data, {
+                headers: {
+                    Authorization: token
+                }
+            })).data
+        },
+        deleteAppointment: async (id: string) => {
+            return (await api.delete<API_res_model & {appointment: Appointment}>(`/patient/appointments/${id}`, {
+                headers: {
+                    Authorization: token
+                }
+            })).data;
         }
     };
 }

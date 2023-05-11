@@ -73,10 +73,12 @@ export const AddDoctorPopup = ({ bookAppointmentOnClick }: AddDoctorPopup_Props)
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.with_search}`}>
-                    <SearchInput value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} resultsData={[...sampleResults]} onResultClick={(e, result) => {
-                        // console.log(result);
-                    }} enableSuggestions={false} />
-                    <RegularBtn data-elm-type={"search_btn"} onClick={() => {submitSearchQuery()}}>Search</RegularBtn>
+                    <form onSubmit={(e) => {e.preventDefault()}}>
+                        <SearchInput value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} resultsData={[...sampleResults]} onResultClick={(e, result) => {
+                            // console.log(result);
+                        }} enableSuggestions={false} />
+                        <RegularBtn type={"submit"} data-elm-type={"search_btn"} onClick={() => {submitSearchQuery()}}>Search</RegularBtn>
+                    </form>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.search_results_wrapper}`}>
                     {results?.length > 0 ? (

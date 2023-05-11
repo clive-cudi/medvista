@@ -79,3 +79,13 @@ export interface Diagnosis {
     isPendingDelete: boolean;
     date: Date;
 }
+
+export interface Appointment {
+    appointmentId: string;
+    patient: string;
+    doctor: string;
+    date: Date;
+    time: string;
+    duration: number;
+    note: string;
+}

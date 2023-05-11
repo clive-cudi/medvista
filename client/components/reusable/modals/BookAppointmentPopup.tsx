@@ -2,6 +2,8 @@ import { Doctor } from "@/types";
 import styles from "@styles/components/reusable/modals/doctorInfoPopup.module.scss";
 import { InputDiv, InputSelect, InputSelect_Props } from "../inputs";
 import { useState } from "react";
+import { PatientQueries } from "@/utils";
+import { useSession } from "next-auth/react";
 
 interface BookAppointmentPopup {
     targetDoctor: Doctor
@@ -43,6 +45,8 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
         }
     ];
     const [message, setMessage] = useState<{message: string, type: "info" | "error"}>({"message": "", type: "info"});
+    const session = useSession();
+    const { createAppointment } = PatientQueries(session);
 
     function updateInputs(key: keyof appointment_, value: string) {
         if (key && value) {
@@ -54,9 +58,27 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
     }
 
     function handleSubmit() {
+        console.log(appointment);
+        // clear message
+        setMessage({message: "", type: "info"});
         if ([...Object.values(appointment)].every(Boolean)) {
             // submit
             console.log(appointment);
+            createAppointment(appointment).then((res) => {
+                console.log(res);
+                if (res.success === true) {
+                    // successfully created appointment
+                    setMessage({message: res.message, type: "info"});
+                    
+                } else {
+                    setMessage({message: res.message, type: "error"})
+                }
+            }).catch((err) => {
+                console.log(err);
+                setMessage({message: err?.response?.data?.message ?? "An error occurred while creating an appointment. Please try again...", type: "error"})
+            })
+        } else {
+            setMessage({message: "Please fill in all details", type: "error"});
         }
     }
 
@@ -109,7 +131,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                         </div>
                     </div>
                     <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
-                        <span data-elm-type={`${message.type}`}>{message.message}</span>
+                        <span data-elm-type={`tag_${message.type}`}>*{message.message}</span>
                     </div>
                     <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
                         <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>

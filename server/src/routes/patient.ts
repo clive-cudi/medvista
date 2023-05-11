@@ -3,6 +3,7 @@ const router = Router();
 import { verifyToken, patient_verify } from "../middleware";
 import {
     getMyDoctors,
+    getMyDoctorsIDs,
     createMedicalHistory,
     deleteMedicalHistory,
     getMedicalHistory,
@@ -49,6 +50,9 @@ router.post("/appointments/:id", verifyToken, updateAppointment);
 
 // delete appointment
 router.delete("/appointments/:id", verifyToken, removeAppointment);
+
+// get my doctors
+router.get("/my-doctors-ids", verifyToken, patient_verify, getMyDoctorsIDs);
 
 // get my doctors
 router.get("/my-doctors", verifyToken, patient_verify, getMyDoctors);
