@@ -6,6 +6,10 @@ import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { FaUserMd } from "react-icons/fa";
 import { HiCog6Tooth } from "react-icons/hi2";
 import { useTabs } from "@/hooks/useTabs";
+import { useEffect } from "react";
+import { useSession } from "next-auth/react";
+import { PatientQueries } from "@/utils";
+import { useDoctorStore, useAppointmentStore } from "@/hooks";
 
 export default function PatientHomePage() {
     const { initialTab: currentTab, switchTab } = useTabs();
@@ -32,6 +36,26 @@ export default function PatientHomePage() {
             }} withIcon={{status: true, icon: <HiCog6Tooth fontSize={20} />}}>{navMin ? null : "Settings" }</SideNavBtn>
         }
     ];
+    const session = useSession();
+    const { getMyDoctors, getAllAppointments } = PatientQueries(session);
+    const { addBulk: addMultipleDoctorsToStore } = useDoctorStore();
+    const { addBulk: addMultipleAppointmentsToStore } = useAppointmentStore();
+
+    useEffect(() => {
+        getMyDoctors().then((res) => {
+            const { active, inactive, archived } = res.doctors;
+            addMultipleDoctorsToStore(active, "active");
+            addMultipleDoctorsToStore(inactive, "inactive");
+            addMultipleDoctorsToStore(archived, "archived");
+        }).catch((err) => {
+            console.log(err);
+        });
+        getAllAppointments().then((res) => {
+            addMultipleAppointmentsToStore(res.appointments)
+        }).catch((err) => {
+            console.log(err);
+        });
+    }, [])
 
     return (
         <>

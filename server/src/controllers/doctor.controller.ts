@@ -3,6 +3,7 @@ import { User } from "../models/user.model";
 import { Doctor } from "../models/doctor.model";
 import { Diagnosis } from "../models/diagnosis.model";
 import { v4 as v4ID } from "uuid";
+import bcrypt from "bcryptjs";
 
 const getAllPatients = (req: Request, res: Response) => {
     const { usertoken } = req.body;
@@ -605,6 +606,112 @@ const createMedicalRecord = async (req: Request, res: Response) => {
             }
         });
     })
+};
+
+const mockDoctor = (req: Request, res: Response) => {
+    const { name, id, phone, location, email, speciality } = req.body;
+    const usertype = "doctor";
+    const password = "Pass1234!";
+
+    if (!name || !id || !phone || !location || !email || !speciality) {
+        return res.status(400).json({
+            success: false,
+            message: "Bad Request. All fields are required",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "bad_request"
+            }
+        });
+    }
+
+    User.findOne({$or: [{id: id}, {email: email}]}).then(async (user) => {
+        if (user) {
+          return res.status(200).json({
+            success: false,
+            message: "User already exists",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "user_exists",
+            },
+          });
+        } else {
+          try {
+            // encrypt password
+            const encryptedPassword = await bcrypt.hash(password, 10);
+            const newUserConstruct = {
+              name,
+              id,
+              email,
+              password: encryptedPassword,
+              usertype,
+              ["doctor"]: {
+                name,
+                id,
+                speciality,
+                ["patients"]: []
+              },
+              location,
+              phoneNumber: phone
+            }
+            const newUser = new User(newUserConstruct);
+  
+            console.log(newUserConstruct);
+  
+            await newUser.save();
+  
+            return res.status(201).json({
+              success: true,
+              message: "User created successfully",
+              usertoken: {
+                user: newUser,
+                token: null,
+              },
+              error: {
+                status: false,
+                code: null,
+              },
+            });
+          } catch(e) {
+            console.log(e);
+            return res.status(500).json({
+              success: false,
+              message: "Internal server error",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: true,
+                code: "internal_server_error",
+                debug: e
+              }
+            })
+          }
+        }
+      }).catch((user_find_err) => {
+        console.log(user_find_err);
+          return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "internal_server_error",
+              debug: user_find_err
+            }
+          });
+      })
 }
 
-export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory };
+export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory, mockDoctor };

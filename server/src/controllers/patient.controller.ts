@@ -942,7 +942,8 @@ const bookAppointment = async (req: Request, res: Response) => {
 
     await Appointment.find({
         date: new Date(date).toISOString(),
-        time: time
+        time: time,
+        doctor: doctorID
     }).then((existing_appointment) => {
         if (existing_appointment.length > 0) {
             appointmentExists = true;
@@ -996,7 +997,6 @@ const bookAppointment = async (req: Request, res: Response) => {
             newAppointment.save().then((new_appointment) => {
                 // add appointment reference to doctor and patient objects
                 doctor.doctor.appointments.push(new_appointment.appointmentId);
-                console.log("checks.....")
                 if (!doctor.doctor.patients.includes(userID)) {
                     doctor.doctor.patients.push(userID);
                 }
@@ -1011,10 +1011,8 @@ const bookAppointment = async (req: Request, res: Response) => {
                     // remove from inactive patients
                     doctor.doctor.archivedPatients = [...doctor.doctor.archivedPatients].filter((target_patient_id) => target_patient_id !== userID)
                 }
-                console.log("saving")
                 doctor.save().then((updated_doctor) => {
                     // update patient ref
-                    console.log("SAVED")
                     User.findOneAndUpdate({id: userID, usertype: "patient"}, {
                         $addToSet: {
                             "patient.appointments": new_appointment.appointmentId,

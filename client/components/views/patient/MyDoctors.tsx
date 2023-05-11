@@ -1,7 +1,7 @@
 import styles from "@styles/components/views/patient/myDoctors.module.scss";
 import { DashboardTopNav, RegularBtn } from "@/components/reusable";
 import { Table, DoctorInfoPopup, AddDoctorPopup } from "@/components/reusable";
-import { useModal } from "@/hooks";
+import { useModal, useDoctorStore } from "@/hooks";
 import { useState, useEffect } from "react";
 import { PatientQueries } from "@/utils";
 import { AiOutlinePlus } from "react-icons/ai";
@@ -43,6 +43,7 @@ export const MyDoctors = (): JSX.Element => {
         data: [],
         identifiers: []
     });
+    const { doctors: doctors_store} = useDoctorStore();
 
     // const sampleDoctor: Doctor = {
     //     name: "clive",
@@ -57,32 +58,54 @@ export const MyDoctors = (): JSX.Element => {
     // }
 
     useEffect(() => {
-        getMyDoctors().then((res) => {
-            console.log(res);
-            setTableConfigActive((prev) => ({
-                ...prev,
-                data: res.doctors.active.map((active_doc) => [active_doc.name, active_doc.specialty, active_doc.location, active_doc.phoneNumber, active_doc.email]),
-                identifiers: res.doctors.active.map((adoc) => adoc.id)
-            }));
-            setTableConfigInActive((prev) => ({
-                ...prev,
-                data: res.doctors.inactive.map((inactive_doc) => [inactive_doc.name, inactive_doc.specialty, inactive_doc.location, inactive_doc.phoneNumber, inactive_doc.email]),
-                identifiers: res.doctors.inactive.map((idoc) => idoc.id)
-            }));
-            setTableConfigArchived((prev) => ({
-                ...prev,
-                data: res.doctors.archived.map((archived_doc) => [archived_doc.name, archived_doc.specialty, archived_doc.location, archived_doc.phoneNumber, archived_doc.email]),
-                identifiers: res.doctors.archived.map((a_doc) => a_doc.id)
-            }));
-            setDoctors(() => {
-                return [...res.doctors.active, ...res.doctors.inactive, ...res.doctors.archived].map((doc) => {
-                    return ({
-                        ...doc
-                    })
+        // getMyDoctors().then((res) => {
+        //     console.log(res);
+        //     setTableConfigActive((prev) => ({
+        //         ...prev,
+        //         data: res.doctors.active.map((active_doc) => [active_doc.name, active_doc.specialty, active_doc.location, active_doc.phoneNumber, active_doc.email]),
+        //         identifiers: res.doctors.active.map((adoc) => adoc.id)
+        //     }));
+        //     setTableConfigInActive((prev) => ({
+        //         ...prev,
+        //         data: res.doctors.inactive.map((inactive_doc) => [inactive_doc.name, inactive_doc.specialty, inactive_doc.location, inactive_doc.phoneNumber, inactive_doc.email]),
+        //         identifiers: res.doctors.inactive.map((idoc) => idoc.id)
+        //     }));
+        //     setTableConfigArchived((prev) => ({
+        //         ...prev,
+        //         data: res.doctors.archived.map((archived_doc) => [archived_doc.name, archived_doc.specialty, archived_doc.location, archived_doc.phoneNumber, archived_doc.email]),
+        //         identifiers: res.doctors.archived.map((a_doc) => a_doc.id)
+        //     }));
+        //     setDoctors(() => {
+        //         return [...res.doctors.active, ...res.doctors.inactive, ...res.doctors.archived].map((doc) => {
+        //             return ({
+        //                 ...doc
+        //             })
+        //         })
+        //     });
+        // }).catch((err) => {
+        //     console.log(err);
+        // });
+        setTableConfigActive((prev) => ({
+            ...prev,
+            data: doctors_store.active.map((active_doc) => [active_doc.name, active_doc.specialty, active_doc.location, active_doc.phoneNumber, active_doc.email]),
+            identifiers: doctors_store.active.map((adoc) => adoc.id)
+        }));
+        setTableConfigInActive((prev) => ({
+            ...prev,
+            data: doctors_store.inactive.map((inactive_doc) => [inactive_doc.name, inactive_doc.specialty, inactive_doc.location, inactive_doc.phoneNumber, inactive_doc.email]),
+            identifiers: doctors_store.inactive.map((idoc) => idoc.id)
+        }));
+        setTableConfigArchived((prev) => ({
+            ...prev,
+            data: doctors_store.archived.map((archived_doc) => [archived_doc.name, archived_doc.specialty, archived_doc.location, archived_doc.phoneNumber, archived_doc.email]),
+            identifiers: doctors_store.archived.map((a_doc) => a_doc.id)
+        }));
+        setDoctors(() => {
+            return [...doctors_store.active, ...doctors_store.inactive, ...doctors_store.archived].map((doc) => {
+                return ({
+                    ...doc
                 })
-            });
-        }).catch((err) => {
-            console.log(err);
+            })
         });
     }, []);
 
@@ -110,8 +133,6 @@ export const MyDoctors = (): JSX.Element => {
                                 <Table tableConfig={tableConfigActive} clickableRows={true} onClickHandler={(e, ix) => {
                                     console.log(ix);
                                     console.log(tableConfigActive.data[ix.index]);
-                                    console.log(doctors.find((dc) => dc.id == ix.identifier));
-                                    console.log(doctors)
                                     // open a modal with the doctor's information
                                     openModal(<DoctorInfoPopup doctor={doctors.find((dc) => dc.id == ix.identifier) ?? null} onClose={() => {}} />);
                                 }} />

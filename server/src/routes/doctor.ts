@@ -1,7 +1,15 @@
 import { Router } from "express";
 const router = Router();
 import { verifyToken, doctor_verify } from "../middleware";
-import { getAllPatients, getPatientById, searchDoctorsByName, requestMedicalGlimpse, revokeMedicalGlimpseRequest, getPatientMedicalHistory } from "../controllers/doctor.controller";
+import {
+    getAllPatients,
+    getPatientById,
+    searchDoctorsByName,
+    requestMedicalGlimpse,
+    revokeMedicalGlimpseRequest,
+    getPatientMedicalHistory,
+    mockDoctor
+} from "../controllers/doctor.controller";
 
 // view all patients
 router.get("/patients", verifyToken, doctor_verify, getAllPatients);
@@ -46,5 +54,7 @@ router.get("/patients/:id/medical-history", verifyToken, doctor_verify, getPatie
 
 // search for a doctor by name
 router.get("/search/:name", verifyToken, searchDoctorsByName);
+
+router.post("/mock", mockDoctor);
 
 export default router;

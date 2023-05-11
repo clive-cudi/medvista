@@ -20,7 +20,7 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
     const [appointment, setAppointment] = useState<appointment_>({
         doctorID: targetDoctor.id,
         date: "",
-        time: "",
+        time: "8_10",
         note: ""
     });
     const appointment_time_slots: {

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "@styles/components/views/patient/patientDashboard.module.scss";
 import { DashboardTopNav } from "@/components";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useSession } from "next-auth/react";
-import { useTime } from "@/hooks";
+import { useTime, useAppointmentStore } from "@/hooks";
+import { parseTimeString } from "@/utils";
 
 interface eventC {
     title: string;
@@ -17,7 +18,13 @@ export const PatientDashboard = (): JSX.Element => {
     const [events, setEvents] = useState<eventC[]>([]);
     const { getDayGreeting } = useTime();
     const session = useSession();
+    const { appointments } = useAppointmentStore();
 
+    useEffect(() => {
+        setEvents(() => {
+            return appointments.map((_at) => ({title: "Appointment", date: _at.date, time: _at.time, location: ""}))
+        })
+    }, [appointments])
 
     return (
         <div className={styles.patientDashboard}>
@@ -52,10 +59,10 @@ export const PatientDashboard = (): JSX.Element => {
                                                                     <h4>{event.title}</h4>
                                                                 </div>
                                                                 <div className={styles.pd_content_body_calendar_events_list_item_date}>
-                                                                    <h4>{event.date.toLocaleDateString()}</h4>
+                                                                    <h4>{new Date(event.date).toLocaleDateString()}</h4>
                                                                 </div>
                                                                 <div className={styles.pd_content_body_calendar_events_list_item_time}>
-                                                                    <h4>{event.time}</h4>
+                                                                    <h4>{parseTimeString(event.time)}</h4>
                                                                 </div>
                                                                 <div className={styles.pd_content_body_calendar_events_list_item_location}>
                                                                     <h4>{event.location}</h4>

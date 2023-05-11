@@ -1,4 +1,4 @@
-import { EMAIL_REGEX } from "./regex";
+import { EMAIL_REGEX, TIME_CHOICE_REGEX } from "./regex";
 
 interface checkFormInputs_Props<T, K> {
     data: T;
@@ -30,8 +30,23 @@ export const validateEmail = (email: string) => {
       EMAIL_REGEX
   );
 };
-  
-  // console.log(checkFormInputs({data: {cool: true, wow: "hello"}, exclude: ["cool"]}))
 
-  export { EMAIL_REGEX, PASSWORD_REGEX, FULLNAME_SPACED_REGEX, ALL_INTEGERS_REGEX } from "./regex";
-  export { api } from "./axios.config";
+export function getUniqueListBy<T, K extends keyof T>(arr: T[], key: K): T[] {
+  return [...new Map(arr.map(item => [item[key], item])).values()];
+}
+
+export function parseTimeString(time: string): string {
+  if (TIME_CHOICE_REGEX.test(time)) {
+    const start = time.substring(0, time.indexOf("_"));
+    const end = time.substring(time.indexOf("_") + 1);
+    
+    return `${start}:00 - ${end}:00`;
+  } else {
+    return "";
+  }
+}
+
+// console.log(checkFormInputs({data: {cool: true, wow: "hello"}, exclude: ["cool"]}))
+
+export { EMAIL_REGEX, PASSWORD_REGEX, FULLNAME_SPACED_REGEX, ALL_INTEGERS_REGEX, TIME_CHOICE_REGEX, DATE_CHOICE_REGEX } from "./regex";
+export { api } from "./axios.config";

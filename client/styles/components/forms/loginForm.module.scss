@@ -11,4 +11,16 @@
     button[type = "submit"] {
         margin-top: 16px;
     }
+    span[data-elm-type = "tag_info"] {
+        color: var(--blue-accent-color);
+        font-size: 12px;
+        font-family: 'Inter', sans-serif;
+        padding: 10px;
+    }
+    span[data-elm-type = "tag_error"] {
+        color: crimson;
+        font-size: 12px;
+        font-family: 'Inter', sans-serif;
+        padding: 10px;
+    }
 }
