@@ -40,7 +40,7 @@ export const DoctorInfoPopup = ({ doctor, onClose }: DoctorInfoPopupProps): JSX.
                     </div>
                     <div className={styles.dip_info_strip_col}>
                         {/* data */}
-                        <span>{doctor?.specialty}</span>
+                        <span>{doctor?.speciality}</span>
                     </div>
                 </div>
                 <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row}`}>
