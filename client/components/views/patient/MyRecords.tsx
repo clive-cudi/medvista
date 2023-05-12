@@ -1,10 +1,13 @@
-import { DashboardTopNav, Table, DiagnosisInfoPopup } from "@/components/reusable";
+import { useRef } from "react";
+import { DashboardTopNav, Table, DiagnosisInfoPopup, RegularBtn } from "@/components/reusable";
 import styles from "@styles/components/views/patient/myDoctors.module.scss";
 import { Diagnosis } from "@/types";
 import { useModal } from "@/hooks";
 import { useEffect, useState } from "react";
 import { PatientQueries } from "@/utils";
 import { useSession } from "next-auth/react";
+import { useReactToPrint } from "react-to-print";
+import { DiagnosisPrint } from "@/components/reusable";
 
 interface TableConfigTypes {
     headers: string[];
@@ -43,6 +46,10 @@ export const MyRecords = (): JSX.Element => {
         identifiers: []
     });
     const [medicalHistory, setMedicalHistory] = useState<Diagnosis[]>([]);
+    const printRef = useRef(null);
+    const handlePrint = useReactToPrint({
+        content: () => printRef.current
+    })
 
     useEffect(() => {
         // fetch records from the database
@@ -50,14 +57,14 @@ export const MyRecords = (): JSX.Element => {
             console.log(res);
             setTableConfig((prev) => ({
                 ...prev,
-                data: res.medical_history.map((diag) => ([diag.diagnosis, diag.date.toString(), diag.doctor, `${diag.isApproved}`])),
+                data: res.medical_history.map((diag) => ([diag.diagnosis, new Date(diag.date).toLocaleDateString(), diag.doctor, `${diag.isApproved}`])),
                 identifiers: res.medical_history.map((med_stry) => med_stry.diagnosisId)
             }));
             setMedicalHistory((prev) => res.medical_history.map((r) => r));
         }).catch((err) => {
             console.log(err);
         })
-    }, [])
+    }, []);
 
     return (
         <div className={`${styles.myDoctors} ${styles.myRecords}`}>
@@ -66,7 +73,12 @@ export const MyRecords = (): JSX.Element => {
                 <div className={styles.pd_content_body}>
                     {/* display a table of doctors assigned to the patient */}
                     <div className={styles.pd_content_body_strip}>
-                        <div className={styles.pd_content_body_card_title}><h3>My Records</h3></div>
+                        <div className={styles.pd_content_body_card_title} style={{"justifyContent": "space-between"}}>
+                        <h3>My Records</h3>
+                        <RegularBtn onClick={() => {
+                            handlePrint()
+                        }}>Print</RegularBtn>
+                        </div>
                         <div className={styles.pd_content_body_card}>
                             <div className={styles.pd_content_body_card_content}>
                                 <Table tableConfig={tableConfig} clickableRows={true} onClickHandler={(e, ix) => {
@@ -76,6 +88,9 @@ export const MyRecords = (): JSX.Element => {
                                 }} />
                             </div>
                         </div>
+                        {/* <span style={{display: "none"}}> */}
+                            <DiagnosisPrint diagnosis={medicalHistory} ref={printRef} />
+                        {/* </span> */}
                     </div>
                 </div>
             </div>

@@ -73,17 +73,14 @@ export const DiagnosisInfoPopup = ({ diagnosis, onClose }: DiagnosisInfoPopupPro
                         <span>{diagnosis?.isApproved ? "Yes" : "No"}</span>
                     </div>
                 </div>
-                <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row} ${styles.dip_info_strip_btns}`}>
+                {/* <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_row} ${styles.dip_info_strip_btns}`}>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
-                        {/* data label */}
-                        {/* thinking of yellow-ish accent */}
                         <button data-elm-type={"archive_btn"}><HiArchive /> Request update </button>
                     </div>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
-                        {/* data */}
                         <button data-elm-type={"remove_btn"}><MdBlock /> Request removal</button>
                     </div>
-                </div>
+                </div> */}
                 {/* <div className={`${styles.dip_info_strip} ${styles.dip_info_strip_column} ${styles.dip_info_strip_btns}`}>
                     <div className={`${styles.dip_info_strip_col} ${styles.dip_info_strip_col_btns}`}>
                         data label
