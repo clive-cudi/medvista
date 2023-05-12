@@ -11,5 +11,50 @@
         width: 100%;
         align-items: center;
         justify-content: center;
+        flex-direction: column;
+        .logo {
+            display: flex;
+            height: 100px;
+            width: 300px;
+            position: relative;
+            img {
+                object-fit: contain;
+            }
+        }
+        .title {
+            display: flex;
+            height: fit-content;
+            width: 100%;
+            font-family: "Inter", sans-serif;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-decoration: underline;
+        }
+        ul {
+            display: flex;
+            height: fit-content;
+            width: 100%;
+            flex-direction: column;
+            list-style-type: none;
+            li {
+                display: flex;
+                border-bottom: var(--default-border);
+                height: fit-content;
+                width: 100%;
+                flex-direction: column;
+                row-gap: 10px;
+                font-family: "Inter", sans-serif;
+                span {
+                    font-size: 14px;
+                    &:first-child {
+                        font-weight: 600;
+                        margin-right: 10px;
+                    }
+                }
+            }
+        }
     }
 }
