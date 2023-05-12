@@ -88,9 +88,9 @@ export const MyRecords = (): JSX.Element => {
                                 }} />
                             </div>
                         </div>
-                        {/* <span style={{display: "none"}}> */}
+                        <span style={{display: "none"}}>
                             <DiagnosisPrint diagnosis={medicalHistory} ref={printRef} />
-                        {/* </span> */}
+                        </span>
                     </div>
                 </div>
             </div>
