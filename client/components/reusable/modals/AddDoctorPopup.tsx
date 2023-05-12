@@ -89,7 +89,7 @@ export const AddDoctorPopup = ({ bookAppointmentOnClick }: AddDoctorPopup_Props)
                                         <span>{rslt.name}</span>
                                     </div>
                                     <div className={styles.dip_info_result_col}>
-                                        <span>{rslt.specialty}</span>
+                                        <span>{rslt.speciality}</span>
                                     </div>
                                     {/* <div className={styles.result_utils}>
                                         <span>

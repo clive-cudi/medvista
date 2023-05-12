@@ -87,17 +87,17 @@ export const MyDoctors = (): JSX.Element => {
         // });
         setTableConfigActive((prev) => ({
             ...prev,
-            data: doctors_store.active.map((active_doc) => [active_doc.name, active_doc.specialty, active_doc.location, active_doc.phoneNumber, active_doc.email]),
+            data: doctors_store.active.map((active_doc) => [active_doc.name, active_doc.speciality, active_doc.location, active_doc.phoneNumber, active_doc.email]),
             identifiers: doctors_store.active.map((adoc) => adoc.id)
         }));
         setTableConfigInActive((prev) => ({
             ...prev,
-            data: doctors_store.inactive.map((inactive_doc) => [inactive_doc.name, inactive_doc.specialty, inactive_doc.location, inactive_doc.phoneNumber, inactive_doc.email]),
+            data: doctors_store.inactive.map((inactive_doc) => [inactive_doc.name, inactive_doc.speciality, inactive_doc.location, inactive_doc.phoneNumber, inactive_doc.email]),
             identifiers: doctors_store.inactive.map((idoc) => idoc.id)
         }));
         setTableConfigArchived((prev) => ({
             ...prev,
-            data: doctors_store.archived.map((archived_doc) => [archived_doc.name, archived_doc.specialty, archived_doc.location, archived_doc.phoneNumber, archived_doc.email]),
+            data: doctors_store.archived.map((archived_doc) => [archived_doc.name, archived_doc.speciality, archived_doc.location, archived_doc.phoneNumber, archived_doc.email]),
             identifiers: doctors_store.archived.map((a_doc) => a_doc.id)
         }));
         setDoctors(() => {

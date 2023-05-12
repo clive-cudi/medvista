@@ -2,10 +2,15 @@ import { useState } from "react";
 import { InputDiv, PasswordInput, RegularBtn, InputSelect } from "../reusable";
 import styles from "@styles/components/forms/loginForm.module.scss";
 import axios from "axios";
-import { API_res_model } from "@/types";
+import { API_res_model, Doctor, Patient } from "@/types";
 import { EMAIL_REGEX } from "@/utils";
 
-export const MockDiagnosisForm = (): JSX.Element => {
+interface MockDignosisForm_props {
+    doctors: Doctor[];
+    patients: Patient[];
+}
+
+export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props): JSX.Element => {
     const [mockData, setMockData] = useState({
         name: "",
         id: "",
@@ -64,7 +69,14 @@ export const MockDiagnosisForm = (): JSX.Element => {
         <form className={styles.login_form} onSubmit={(e) => {
             e.preventDefault();
         }}>
-            
+            <span>Choose Patient:</span>
+            <InputSelect options={patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []} name={"patient"} />
+            <span>Choose Doctor:</span>
+            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} />
+            <InputDiv type={"date"} inputArgs={{name: "date"}} onChange={(e) => {}} />
+            <textarea placeholder={"Enter Symptoms"} name="symptoms" onChange={(e) => {}}></textarea>
+            <InputDiv type={"text"} placeholder={"Enter diagnosis"} inputArgs={{name: "diagnosis"}} onChange={(e) => {}} />
+            <textarea placeholder={"Enter treatment"} name="treatment"></textarea>
             <span data-elm-type={`tag_${message.type}`}>*{message.message}</span>
             <RegularBtn type={"submit"} onClick={submitMockData}>Mock Diagnosis</RegularBtn>
         </form>

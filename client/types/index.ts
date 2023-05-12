@@ -54,7 +54,7 @@ export interface Doctor {
     isVerified: boolean;
     location: string;
     phoneNumber: string;
-    specialty: string;
+    speciality: string;
     status: "active" | "inactive" | "archived"
 }
 
