@@ -856,10 +856,10 @@ const mockAllPatients = (req: Request, res: Response) => {
 };
 
 const mockAllDoctors = (req: Request, res: Response) => {
-    User.find({usertype: "patient"}).then((doctors) => {
+    User.find({usertype: "doctor"}).then((doctors) => {
         return res.status(200).json({
             success: true,
-            message: "all patients",
+            message: "all doctors",
             doctors,
             error: null
         })

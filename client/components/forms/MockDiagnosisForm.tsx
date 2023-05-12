@@ -39,17 +39,18 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
 
     function submitMockData() {
         setMessage({message: "", type: "info"});
+        console.log(mockData);
         if ([...Object.values(mockData)].every(Boolean)) {
-            axios.post<API_res_model>(`${process.env.BACKEND_URL}/doctor/mock`, {
+            axios.post<API_res_model>(`${process.env.BACKEND_URL}/doctor/diagnosis/mock`, {
                 ...mockData
             }).then((res)=> {
                 console.log(res);
                 if (res.data.success) {
                     // success
-                    setMessage({message: res.data.message ?? "Doctor created successfully", type: "info"})
+                    setMessage({message: res.data.message ?? "Diagnosis created successfully", type: "info"})
                 } else {
                     // error
-                    setMessage({message: res.data.message ?? "An error occurred while trying to register. Please try again later.", type: "error"})
+                    setMessage({message: res.data.message ?? "An error occurred while trying to create diagnosis. Please try again later.", type: "error"})
                 }
             }).catch((signup_err) => {
                 console.log(signup_err);
@@ -66,13 +67,13 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
             e.preventDefault();
         }}>
             <span>Choose Patient:</span>
-            <InputSelect options={patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []} name={"patient"} onChange={handleChange} />
+            <InputSelect options={[{label: "Choose Patient", value: ""}, ...patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []] ?? []} onChange={handleChange} />
             <span>Choose Doctor:</span>
             <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} onChange={handleChange} />
             <InputDiv type={"date"} inputArgs={{name: "date"}} onChange={handleChange} />
             <textarea placeholder={"Enter Symptoms"} name="symptoms" onChange={handleChange}></textarea>
-            <InputDiv type={"text"} placeholder={"Enter diagnosis"} inputArgs={{name: "diagnosis"}} onChange={(e) => {}} />
-            <textarea placeholder={"Enter treatment"} name="treatment"></textarea>
+            <InputDiv type={"text"} placeholder={"Enter diagnosis"} inputArgs={{name: "diagnosis"}} onChange={handleChange} />
+            <textarea placeholder={"Enter treatment"} name="treatment" onChange={handleChange}></textarea>
             <span data-elm-type={`tag_${message.type}`}>*{message.message}</span>
             <RegularBtn type={"submit"} onClick={submitMockData}>Mock Diagnosis</RegularBtn>
         </form>
