@@ -60,7 +60,7 @@ router.get("/search/:name", verifyToken, searchDoctorsByName);
 
 router.post("/mock", mockDoctor);
 
-router.post("/diagnosis/mock", mockDiagnosis);
+router.post("/mock/diagnosis", mockDiagnosis);
 
 router.get("/mock/patients", mockAllPatients);
 

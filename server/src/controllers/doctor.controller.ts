@@ -1,6 +1,5 @@
 import { Request, Response,  } from "express";
 import { User } from "../models/user.model";
-import { Doctor } from "../models/doctor.model";
 import { Diagnosis } from "../models/diagnosis.model";
 import { v4, v4 as v4ID } from "uuid";
 import bcrypt from "bcryptjs";
@@ -714,8 +713,6 @@ const mockDoctor = (req: Request, res: Response) => {
       })
 };
 const mockDiagnosis = (req: Request, res: Response) => {
-    const { usertoken } = req.body;
-    const { id: userId } = usertoken;
     const diagnosisId = v4();
 
     const { doctor, patient, date, symptoms, diagnosis, treatment } = req.body;
@@ -736,7 +733,7 @@ const mockDiagnosis = (req: Request, res: Response) => {
         });
     };
 
-    User.findOne({id: userId, usertype: "patient"}).then((user) => {
+    User.findOne({id: patient, usertype: "patient"}).then((user) => {
         if (user) {
             // create a new diagnosis object
             const newDiagnosis = new Diagnosis({
@@ -752,24 +749,42 @@ const mockDiagnosis = (req: Request, res: Response) => {
 
             // save the diagnosis
             newDiagnosis.save().then((diagnosis) => {
-                // if the diagnosis is not approved, then it should not be added to the patient's diagnoses
-                
-                // update the doctor's pending approvals
-                User.findOneAndUpdate({id: doctor, usertype: "doctor"}, {$push: {"doctor.pendingApprovals": diagnosisId}}).then((doctor) => {
-                    return res.status(200).json({
-                        success: true,
-                        message: "Medical history created and pending approval",
-                        usertoken: {
-                            user: user,
-                            token: usertoken.token
-                        },
-                        error: {
-                            status: false,
-                            code: null
-                        },
-                        medical_history: diagnosis
-                    });
-                }).catch((doctor_update_err) => {
+                // !if the diagnosis is not approved, then it should not be added to the patient's diagnoses
+                user.patient.diagnoses.push(diagnosis.diagnosisId);
+
+                user.save().then((saved_patient) => {
+                    // update the doctor's pending approvals
+                    User.findOneAndUpdate({id: doctor, usertype: "doctor"}, {$push: {"doctor.pendingApprovals": diagnosisId}}).then((doctor) => {
+                        return res.status(200).json({
+                            success: true,
+                            message: "Medical history created and pending approval",
+                            usertoken: {
+                                user: user,
+                                token: null
+                            },
+                            error: {
+                                status: false,
+                                code: null
+                            },
+                            medical_history: diagnosis
+                        });
+                    }).catch((doctor_update_err) => {
+                        return res.status(500).json({
+                            success: false,
+                            message: "Internal Server Error",
+                            usertoken: {
+                                user: null,
+                                token: null
+                            },
+                            error: {
+                                status: true,
+                                code: "internal_server_error",
+                                debug: doctor_update_err
+                            }
+                        });
+                    }); 
+                }).catch((err) => {
+                    console.log(err);
                     return res.status(500).json({
                         success: false,
                         message: "Internal Server Error",
@@ -780,10 +795,10 @@ const mockDiagnosis = (req: Request, res: Response) => {
                         error: {
                             status: true,
                             code: "internal_server_error",
-                            debug: doctor_update_err
+                            debug: err
                         }
                     });
-                });        
+                }) 
             }).catch((diagnosis_save_err) => {
                 return res.status(500).json({
                     success: false,

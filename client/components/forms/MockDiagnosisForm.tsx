@@ -41,7 +41,7 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
         setMessage({message: "", type: "info"});
         console.log(mockData);
         if ([...Object.values(mockData)].every(Boolean)) {
-            axios.post<API_res_model>(`${process.env.BACKEND_URL}/doctor/diagnosis/mock`, {
+            axios.post<API_res_model>(`${process.env.BACKEND_URL}/doctor/mock/diagnosis`, {
                 ...mockData
             }).then((res)=> {
                 console.log(res);
@@ -67,9 +67,19 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
             e.preventDefault();
         }}>
             <span>Choose Patient:</span>
-            <InputSelect options={[{label: "Choose Patient", value: ""}, ...patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []] ?? []} onChange={handleChange} />
+            <InputSelect options={[{label: "Choose Patient", value: ""}, ...patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []] ?? []} onChange={(e) => {
+                setMockData((prev) => ({
+                    ...prev,
+                    patient: e.target.value
+                }))
+            }} />
             <span>Choose Doctor:</span>
-            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} onChange={handleChange} />
+            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} onChange={(e) => {
+                setMockData((prev) => ({
+                    ...prev,
+                    doctor: e.target.value
+                }))
+            }} />
             <InputDiv type={"date"} inputArgs={{name: "date"}} onChange={handleChange} />
             <textarea placeholder={"Enter Symptoms"} name="symptoms" onChange={handleChange}></textarea>
             <InputDiv type={"text"} placeholder={"Enter diagnosis"} inputArgs={{name: "diagnosis"}} onChange={handleChange} />
