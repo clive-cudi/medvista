@@ -625,7 +625,7 @@ const getMyDoctors = (req: Request, res: Response) => {
 
                 for (let i = 0; i < found_doctors.length; i++) {
                     const targetDoctor = doctors.find((dctr) => dctr.id === found_doctors[i].id);
-                    const { doctor, password, ...doc } = {...found_doctors[i]._doc, doctor: {}, password: "", specialty: found_doctors[i].doctor.speciality};
+                    const { doctor, password, ...doc } = {...found_doctors[i]._doc, doctor: {}, password: "", speciality: found_doctors[i].doctor.speciality};
                     
                     if (targetDoctor) {
                         doctorStatusConstruct[targetDoctor.status] = [...doctorStatusConstruct[targetDoctor.status], doc];

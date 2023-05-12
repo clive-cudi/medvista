@@ -12,17 +12,17 @@ interface MockDignosisForm_props {
 
 export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props): JSX.Element => {
     const [mockData, setMockData] = useState({
-        name: "",
-        id: "",
-        phone: "",
-        location: "",
-        email: "",
-        speciality: ""
+        patient: "",
+        doctor: "",
+        date: "",
+        symptoms: "",
+        diagnosis: "",
+        treatment: ""
     });
     const [message, setMessage] = useState<{message: string, type: "info" | "error"}>({"message": "", type: "info"});
     
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>): void => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>): void => {
         const value = e.target.value;
 
         const name = e.target.name;
@@ -39,10 +39,6 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
 
     function submitMockData() {
         setMessage({message: "", type: "info"});
-        if (!EMAIL_REGEX.test(mockData.email)) {
-            setMessage({message: "Invalid email", type: "error"})
-            return;
-        } 
         if ([...Object.values(mockData)].every(Boolean)) {
             axios.post<API_res_model>(`${process.env.BACKEND_URL}/doctor/mock`, {
                 ...mockData
@@ -70,11 +66,11 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
             e.preventDefault();
         }}>
             <span>Choose Patient:</span>
-            <InputSelect options={patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []} name={"patient"} />
+            <InputSelect options={patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []} name={"patient"} onChange={handleChange} />
             <span>Choose Doctor:</span>
-            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} />
-            <InputDiv type={"date"} inputArgs={{name: "date"}} onChange={(e) => {}} />
-            <textarea placeholder={"Enter Symptoms"} name="symptoms" onChange={(e) => {}}></textarea>
+            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} onChange={handleChange} />
+            <InputDiv type={"date"} inputArgs={{name: "date"}} onChange={handleChange} />
+            <textarea placeholder={"Enter Symptoms"} name="symptoms" onChange={handleChange}></textarea>
             <InputDiv type={"text"} placeholder={"Enter diagnosis"} inputArgs={{name: "diagnosis"}} onChange={(e) => {}} />
             <textarea placeholder={"Enter treatment"} name="treatment"></textarea>
             <span data-elm-type={`tag_${message.type}`}>*{message.message}</span>
