@@ -4,6 +4,7 @@ import { InputDiv, InputSelect, InputSelect_Props } from "../inputs";
 import { useState } from "react";
 import { PatientQueries } from "@/utils";
 import { useSession } from "next-auth/react";
+import { useDoctorStore, useAppointmentStore } from "@/hooks";
 
 interface BookAppointmentPopup {
     targetDoctor: Doctor
@@ -49,6 +50,8 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
     const [message, setMessage] = useState<{message: string, type: "info" | "error"}>({"message": "", type: "info"});
     const session = useSession();
     const { createAppointment } = PatientQueries(session);
+    const { add: addDoctorToStore, remove } = useDoctorStore();
+    const { add: addAppointmentToStore } = useAppointmentStore();
 
     function updateInputs(key: keyof appointment_, value: string) {
         if (key && value) {
@@ -70,7 +73,8 @@ export const BookAppointmentPopup = ({ targetDoctor }: BookAppointmentPopup): JS
                 if (res.success === true) {
                     // successfully created appointment
                     setMessage({message: res.message, type: "info"});
-                    
+                    addAppointmentToStore(res.appointment);
+                    addDoctorToStore(res.doctor, "active");
                 } else {
                     setMessage({message: res.message, type: "error"})
                 }

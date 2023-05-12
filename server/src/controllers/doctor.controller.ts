@@ -2,7 +2,7 @@ import { Request, Response,  } from "express";
 import { User } from "../models/user.model";
 import { Doctor } from "../models/doctor.model";
 import { Diagnosis } from "../models/diagnosis.model";
-import { v4 as v4ID } from "uuid";
+import { v4, v4 as v4ID } from "uuid";
 import bcrypt from "bcryptjs";
 
 const getAllPatients = (req: Request, res: Response) => {
@@ -712,6 +712,172 @@ const mockDoctor = (req: Request, res: Response) => {
             }
           });
       })
+};
+const mockDiagnosis = (req: Request, res: Response) => {
+    const { usertoken } = req.body;
+    const { id: userId } = usertoken;
+    const diagnosisId = v4();
+
+    const { doctor, patient, date, symptoms, diagnosis, treatment } = req.body;
+
+    // check if all the fields are present
+    if (!diagnosisId || !doctor || !patient || !date || !symptoms || !diagnosis || !treatment) {
+        return res.status(400).json({
+            success: false,
+            message: "Bad Request. All fields are required",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "bad_request"
+            }
+        });
+    };
+
+    User.findOne({id: userId, usertype: "patient"}).then((user) => {
+        if (user) {
+            // create a new diagnosis object
+            const newDiagnosis = new Diagnosis({
+                diagnosisId: diagnosisId,
+                doctor: doctor,
+                patient: patient,
+                date: date,
+                symptoms: symptoms,
+                diagnosis: diagnosis,
+                treatment: treatment,
+                isApproved: true
+            });
+
+            // save the diagnosis
+            newDiagnosis.save().then((diagnosis) => {
+                // if the diagnosis is not approved, then it should not be added to the patient's diagnoses
+                
+                // update the doctor's pending approvals
+                User.findOneAndUpdate({id: doctor, usertype: "doctor"}, {$push: {"doctor.pendingApprovals": diagnosisId}}).then((doctor) => {
+                    return res.status(200).json({
+                        success: true,
+                        message: "Medical history created and pending approval",
+                        usertoken: {
+                            user: user,
+                            token: usertoken.token
+                        },
+                        error: {
+                            status: false,
+                            code: null
+                        },
+                        medical_history: diagnosis
+                    });
+                }).catch((doctor_update_err) => {
+                    return res.status(500).json({
+                        success: false,
+                        message: "Internal Server Error",
+                        usertoken: {
+                            user: null,
+                            token: null
+                        },
+                        error: {
+                            status: true,
+                            code: "internal_server_error",
+                            debug: doctor_update_err
+                        }
+                    });
+                });        
+            }).catch((diagnosis_save_err) => {
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal Server Error",
+                    usertoken: {
+                        user: null,
+                        token: null
+                    },
+                    error: {
+                        status: true,
+                        code: "internal_server_error",
+                        debug: diagnosis_save_err
+                    }
+                });
+            });
+        } else {
+            return res.status(404).json({
+                success: false,
+                message: "User not found",
+                usertoken: {
+                    user: null,
+                    token: null
+                },
+                error: {
+                    status: true,
+                    code: "user_not_found"
+                }
+            })
+        }
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    });
+};
+
+const mockAllPatients = (req: Request, res: Response) => {
+    User.find({usertype: "patient"}).then((patients) => {
+        return res.status(200).json({
+            success: true,
+            message: "all patients",
+            patients,
+            error: null
+        })
+    }).catch((user_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: user_find_err
+            }
+        });
+    })
+};
+
+const mockAllDoctors = (req: Request, res: Response) => {
+    User.find({usertype: "patient"}).then((doctors) => {
+        return res.status(200).json({
+            success: true,
+            message: "all patients",
+            doctors,
+            error: null
+        })
+    }).catch((usr_find_err) => {
+        return res.status(500).json({
+            success: false,
+            message: "Internal Server Error",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "internal_server_error",
+                debug: usr_find_err
+            }
+        });
+    })
 }
 
-export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory, mockDoctor };
+export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory, mockDoctor, mockDiagnosis, mockAllPatients, mockAllDoctors };

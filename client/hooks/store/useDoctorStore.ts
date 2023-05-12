@@ -42,7 +42,7 @@ export const useDoctorStore = create<DoctorStore>()((set) => {
         },
         removeBulk(doctor_ids) {
             return set((state) => {
-                return {doctors: Object.assign({}, ...Object.entries(state.doctors).map((doctor_entry: [string, Doctor[]]) => ({key: doctor_entry[0], value: doctor_entry[1].filter((doc_) => doctor_ids.includes(doc_.id))})))}
+                return {doctors: Object.assign({}, ...Object.entries(state.doctors).map((doctor_entry: [string, Doctor[]]) => ({key: doctor_entry[0], value: doctor_entry[1].filter((doc_) => !doctor_ids.includes(doc_.id))})))}
             })
         }
     }

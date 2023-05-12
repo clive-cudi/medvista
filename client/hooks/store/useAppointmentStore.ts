@@ -25,12 +25,12 @@ export const useAppointmentStore = create<AppointmentStore_>()((set) => {
         },
         remove(appointment_id) {
             return set((state) => {
-                return {appointments: state.appointments.filter((at_) => at_.appointmentId === appointment_id)}
+                return {appointments: state.appointments.filter((at_) => at_.appointmentId !== appointment_id)}
             })
         },
         removeBulk(appointment_ids) {
             return set((state) => {
-                return {appointments: state.appointments.filter((at_) => appointment_ids.includes(at_.appointmentId))}
+                return {appointments: state.appointments.filter((at_) => !appointment_ids.includes(at_.appointmentId))}
             })            
         },
     }

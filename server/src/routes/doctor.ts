@@ -8,7 +8,8 @@ import {
     requestMedicalGlimpse,
     revokeMedicalGlimpseRequest,
     getPatientMedicalHistory,
-    mockDoctor
+    mockDoctor,
+    mockDiagnosis
 } from "../controllers/doctor.controller";
 
 // view all patients
@@ -56,5 +57,9 @@ router.get("/patients/:id/medical-history", verifyToken, doctor_verify, getPatie
 router.get("/search/:name", verifyToken, searchDoctorsByName);
 
 router.post("/mock", mockDoctor);
+
+router.post("/diagnosis/mock", mockDiagnosis);
+
+router.get("mock/patients", getAllPatients);
 
 export default router;

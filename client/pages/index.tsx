@@ -29,7 +29,7 @@ Home.getInitialProps = async (ctx: {req: any, res: any}) => {
 
   if ((session)?.user && res) {
     res.writeHead(302, {
-      Location: (session)?.user.userType === 'patient' ? '/patient' : '/doctor',
+      Location: (session)?.user.userType === 'doctor' ? '/doctor' : '/patient',
     });
 
     res.end();

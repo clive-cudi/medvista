@@ -6,7 +6,7 @@ import { Appointment, Diagnosis } from "@/types";
 import { parseTimeString, PatientQueries } from "@/utils";
 import { useModal } from "@/hooks";
 import { UpdateAppointmentPopup } from "./UpdateAppointmentPopup";
-import { useDoctorStore } from "@/hooks";
+import { useDoctorStore, useAppointmentStore } from "@/hooks";
 import { useSession } from "next-auth/react";
 import { PopupModal } from "./PopupModal";
 
@@ -20,6 +20,7 @@ export const AppointmentInfoPopup = ({ appointment, onClose }: AppointmentInfoPo
     const { doctors } = useDoctorStore();
     const session = useSession();
     const { deleteAppointment } = PatientQueries(session);
+    const { remove: removeAppointmentFromStore } = useAppointmentStore();
 
 
     function handleAppointmentDelete() {
@@ -28,6 +29,7 @@ export const AppointmentInfoPopup = ({ appointment, onClose }: AppointmentInfoPo
                 if (res.success === true) {
                     // deleted
                     openModal(<PopupModal message={res.message ?? "Successfully deleted appointment"} type={"success"} />);
+                    removeAppointmentFromStore(appointment.appointmentId);
                 } else {
                     openModal(<PopupModal message={res.message ?? "Failed to delete appointment"} type="error" />);
                 }

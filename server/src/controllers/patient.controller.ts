@@ -1032,7 +1032,8 @@ const bookAppointment = async (req: Request, res: Response) => {
                                 user: usertoken,
                                 token: usertoken.token
                             },
-                            appointment: new_appointment._doc
+                            appointment: new_appointment._doc,
+                            doctor: updated_doctor
                         });
                     }).catch((patient_update_err) => {
                         return res.status(500).json({

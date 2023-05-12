@@ -73,7 +73,7 @@ export const PatientQueries = (session: SessionContextValue) => {
             return data;
         },
         createAppointment: async (data: any) => {
-            const { data: res } = await api.post<API_res_model & {appointment: Appointment}>(`/patient/appointments`, data, {
+            const { data: res } = await api.post<API_res_model & {appointment: Appointment, doctor: Doctor}>(`/patient/appointments`, data, {
                 headers: {
                     Authorization: token
                 }
