@@ -712,6 +712,111 @@ const mockDoctor = (req: Request, res: Response) => {
           });
       })
 };
+const mockPatient = (req: Request, res: Response) => {
+    const { name, id, phone, location, email, speciality } = req.body;
+    const usertype = "patient";
+    const password = "Pass1234!";
+
+    if (!name || !id || !phone || !location || !email || !speciality) {
+        return res.status(400).json({
+            success: false,
+            message: "Bad Request. All fields are required",
+            usertoken: {
+                user: null,
+                token: null
+            },
+            error: {
+                status: true,
+                code: "bad_request"
+            }
+        });
+    }
+
+    User.findOne({$or: [{id: id}, {email: email}]}).then(async (user) => {
+        if (user) {
+          return res.status(200).json({
+            success: false,
+            message: "User already exists",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "user_exists",
+            },
+          });
+        } else {
+          try {
+            // encrypt password
+            const encryptedPassword = await bcrypt.hash(password, 10);
+            const newUserConstruct = {
+              name,
+              id,
+              email,
+              password: encryptedPassword,
+              usertype,
+              ["patient"]: {
+                name,
+                id,
+                speciality,
+                ["doctors"]: []
+              },
+              location,
+              phoneNumber: phone
+            }
+            const newUser = new User(newUserConstruct);
+  
+            console.log(newUserConstruct);
+  
+            await newUser.save();
+  
+            return res.status(201).json({
+              success: true,
+              message: "User created successfully",
+              usertoken: {
+                user: newUser,
+                token: null,
+              },
+              error: {
+                status: false,
+                code: null,
+              },
+            });
+          } catch(e) {
+            console.log(e);
+            return res.status(500).json({
+              success: false,
+              message: "Internal server error",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: true,
+                code: "internal_server_error",
+                debug: e
+              }
+            })
+          }
+        }
+      }).catch((user_find_err) => {
+        console.log(user_find_err);
+          return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            usertoken: {
+              user: null,
+              token: null,
+            },
+            error: {
+              status: true,
+              code: "internal_server_error",
+              debug: user_find_err
+            }
+          });
+      })
+};
 const mockDiagnosis = (req: Request, res: Response) => {
     const diagnosisId = v4();
 
@@ -895,4 +1000,4 @@ const mockAllDoctors = (req: Request, res: Response) => {
     })
 }
 
-export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory, mockDoctor, mockDiagnosis, mockAllPatients, mockAllDoctors };
+export { getAllPatients, getPatientById, requestMedicalGlimpse, revokeMedicalGlimpseRequest, searchDoctorsByName, getPatientMedicalHistory, mockDoctor, mockDiagnosis, mockAllPatients, mockAllDoctors, mockPatient };

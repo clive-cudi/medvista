@@ -11,7 +11,8 @@ import {
     mockDoctor,
     mockDiagnosis,
     mockAllPatients,
-    mockAllDoctors
+    mockAllDoctors,
+    mockPatient
 } from "../controllers/doctor.controller";
 
 // view all patients
@@ -65,5 +66,7 @@ router.post("/mock/diagnosis", mockDiagnosis);
 router.get("/mock/patients", mockAllPatients);
 
 router.get("/mock/doctors", mockAllDoctors);
+
+router.post("/mock/patient", mockPatient);
 
 export default router;
