@@ -14,7 +14,7 @@ router.get("/me");
 
 router.post("/otp", addOTP);
 
-router.delete("/otp", verifyOTP);
+router.post("/otp/verify", verifyOTP);
 
 export default router;
 
