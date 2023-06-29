@@ -14,6 +14,7 @@ export interface UserType {
     isVerified: boolean;
     location: string;
     phoneNumber: string;
+    phone: string;
     _doc: any;
 }
 
@@ -45,7 +46,8 @@ const userSchema = new Schema<UserType, Model<UserType>, UserType>({
         default: false
     },
     location: String,
-    phoneNumber: String
+    phoneNumber: String,
+    phone: String
 }, {
     timestamps: true
 });

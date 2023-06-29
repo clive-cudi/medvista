@@ -15,10 +15,11 @@ interface registerCredentials {
     email: string;
     password: string;
     confirmPassword: string;
-    usertype: "doctor" | "patient"
+    usertype: "doctor" | "patient";
+    phone: string;
 }
 const register = (req: Request, res: Response) => {
-    const { name, id, email, password, confirmPassword, usertype }: registerCredentials = req.body;
+    const { name, id, email, password, confirmPassword, usertype, phone }: registerCredentials = req.body;
 
     if (!name || !id || !email || !password || !confirmPassword) {
         return res.status(400).json({
@@ -92,6 +93,7 @@ const register = (req: Request, res: Response) => {
             email,
             password: encryptedPassword,
             usertype,
+            phone,
             [usertype === "patient" ? "patient" : "doctor" ]: {
               name,
               id,
