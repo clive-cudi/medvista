@@ -7,6 +7,7 @@ import { sendEmail, validateEmail } from "../helpers";
 import { Token } from "../models/token.model";
 import { Document } from "mongoose";
 import { JWTDecodedEmailVerificationToken } from "../types";
+import { Otp as OTP } from "../models/otp.model";
 
 interface registerCredentials {
     name: string;
@@ -532,6 +533,148 @@ const verifyEmail = (req: Request, res: Response) => {
     });
   }
     
+};
+
+const addOTP = (req: Request, res: Response) => {
+  const { otp, phone } = req.body;
+
+  if (!otp || !phone) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing credentials",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "missing_credentials",
+      },
+    });
+  }
+
+  // save otp
+  const new_otp = new OTP({
+    otp: otp,
+    phone: phone,
+  });
+
+  new_otp.save().then((otp) => {
+    return res.status(200).json({
+      success: true,
+      message: "OTP added",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: false,
+        code: null,
+      },
+    });
+  }
+
+  ).catch((otp_save_err) => {
+    return res.status(200).json({
+      success: false,
+      message: "An error occurred",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "db_error",
+        debug: otp_save_err,
+      },
+    });
+  }
+  );
 }
 
-export { register, login, confirmEmail, verifyEmail };
+const verifyOTP = (req: Request, res: Response) => {
+  const { otp, phone } = req.body;
+
+  if (!otp || !phone) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing credentials",
+      usertoken: {
+        user: null,
+        token: null,
+      }
+    });
+  }
+
+  // check if otp exists
+  OTP.findOne({otp: otp, phone: phone}).then((otp_) => {
+    if (otp_) {
+      // otp exists
+      // remove otp
+      OTP.findOneAndDelete({otp: otp, phone: phone}).then((otp_deleted) => {
+        // return response
+        // console.log(otp_deleted)
+        return res.status(200).json({
+          success: true,
+          message: "OTP verified",
+          usertoken: {
+            user: null,
+            token: null,
+          },
+          error: {
+            status: false,
+            code: null,
+          },
+        });
+      }
+      ).catch((otp_delete_err) => {
+        return res.status(200).json({
+          success: false,
+          message: "An error occurred",
+          usertoken: {
+            user: null,
+            token: null,
+          },
+          error: {
+            status: true,
+            code: "db_error",
+            debug: otp_delete_err,
+          },
+        });
+      }
+      );
+    } else {
+      // otp does not exist
+      return res.status(200).json({
+        success: false,
+        message: "Invalid OTP",
+        usertoken: {
+          user: null,
+          token: null,
+        },
+        error: {
+          status: true,
+          code: "invalid_otp",
+        },
+      });
+
+    }
+  }).catch((otp_find_err) => {
+    return res.status(200).json({
+      success: false,
+      message: "An error occurred",
+      usertoken: {
+        user: null,
+        token: null,
+      },
+      error: {
+        status: true,
+        code: "db_error",
+        debug: otp_find_err,
+      },
+    });
+  });
+}
+
+
+export { register, login, confirmEmail, verifyEmail, addOTP, verifyOTP };
