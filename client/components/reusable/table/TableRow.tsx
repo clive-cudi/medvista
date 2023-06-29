@@ -31,12 +31,8 @@ export const TableRow = ({
       }}
       className={clickable ? styles.tr_clickable : ""}
     >
-        {/* add functionality for rendering special components in cells since the arrays are limited to a single data type */}
-        {/* represent special components with strings using a specific unique format and the component ID passed on to a renderer function that renders the corresponding component with its ID */}
-        {/* __component@componentID */}
       {rowData.length > 0 ? (
-        rowData.map((cell, i) => {
-        //   typecheck the cell since renderbyID reference will work on strings only        
+        rowData.map((cell, i) => {     
             return <td key={i}>{cell}</td>;
         })
       ) : (
