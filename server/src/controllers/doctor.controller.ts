@@ -756,11 +756,11 @@ const mockPatient = (req: Request, res: Response) => {
               email,
               password: encryptedPassword,
               usertype,
-              ["patient"]: {
+              ["doctor"]: {
                 name,
                 id,
                 speciality,
-                ["doctors"]: []
+                ["patients"]: []
               },
               location,
               phoneNumber: phone
