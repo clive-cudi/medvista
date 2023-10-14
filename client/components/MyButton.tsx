@@ -9,11 +9,8 @@ function MyButton({ label, isDisabled, whenMyButtonIsClicked }: {label: string, 
 }
 
 function sayHello(message: string): string {
-    console.log(message);
 
     return message;
 }
-
-// sayHello("wowowowowo")
 
 export {MyButton};
