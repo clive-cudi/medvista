@@ -12,3 +12,16 @@
  	- Archive a doctor
 	- remove a doctor
 	- revoke medical glimpse approval
+
+
+#### demo recording
+- the app has two major views => doctor side and patient side
+- auth
+    - registration
+    - email verification
+    - validation of fields
+    - login
+- appointments
+    - patients booking appointments based on time slots available
+    - patient can't book an already occupied appointment time slot
+    - doctors who've been booked for an appointment are automatically given view access to the patient's records

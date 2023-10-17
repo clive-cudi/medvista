@@ -68,13 +68,15 @@ export const MockDiagnosisForm = ({ doctors, patients }: MockDignosisForm_props)
         }}>
             <span>Choose Patient:</span>
             <InputSelect options={[{label: "Choose Patient", value: ""}, ...patients?.map((patient_) => ({label: patient_.name, value: patient_.id})) ?? []] ?? []} onChange={(e) => {
+        
                 setMockData((prev) => ({
                     ...prev,
                     patient: e.target.value
                 }))
             }} />
             <span>Choose Doctor:</span>
-            <InputSelect options={doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})) ?? []} name={"doctor"} onChange={(e) => {
+            <InputSelect options={[...doctors?.map((doctor_) => ({label: doctor_.name, value: doctor_.id})), {label: "_", value: ""}] ?? []} name={"doctor"} onChange={(e) => {
+
                 setMockData((prev) => ({
                     ...prev,
                     doctor: e.target.value
