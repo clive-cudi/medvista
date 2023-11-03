@@ -12,7 +12,7 @@ import DoctorRouter from "./routes/doctor";
 dotenv.config({ path: path.resolve(__dirname, "../.env.local") });
 const PORT = process.env.SERVER_PORT ?? 4000;
 const MONGO_URI =
-  process.env.SERVER_ENV === "development"
+  process.env.SERVER_ENV === "production"
     ? process.env.MONGO_URI_DEV
     : process.env.MONGO_URI;
 
@@ -45,4 +45,3 @@ app.use("/doctor", DoctorRouter);
 app.listen(PORT, () => {
   console.log(`Server up on PORT: ${PORT}`);
 });
-
