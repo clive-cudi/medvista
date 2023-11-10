@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "@styles/components/views/patient/patientDashboard.module.scss";
-import { DashboardTopNav } from "@/components/reusable";
-import { useTime } from "@/hooks";
+import { AppointmentInfoPopup, DashboardTopNav } from "@/components/reusable";
+import { useAppointmentStore, useModal, useTime } from "@/hooks";
 import { useSession } from "next-auth/react";
 import Calendar from "react-calendar";
 import { Appointment } from "@/types";
@@ -22,8 +22,34 @@ export const DoctorDashboard = (): JSX.Element => {
   const { getDayGreeting } = useTime();
   const session = useSession();
   const [events, setEvents] = useState<eventC<Appointment>[]>([]);
+  const { appointments } = useAppointmentStore();
+  const { openModal } = useModal();
 
-  function handleEventClick(ev: event_type, appnt_?: Appointment) {}
+  useEffect(() => {
+    setEvents(
+      appointments.map((_at) => ({
+        title: "Appointment",
+        date: _at.date,
+        time: _at.time,
+        location: "",
+        type: "appointment",
+        data: _at,
+      }))
+    );
+  }, [appointments]);
+
+  function handleEventClick(ev: event_type, appnt_?: Appointment) {
+    switch (ev) {
+      case "appointment":
+        openModal(
+          <AppointmentInfoPopup
+            appointment={appnt_ ?? null}
+            onClose={() => {}}
+          />
+        );
+        return;
+    }
+  }
 
   return (
     <div className={styles.patientDashboard}>

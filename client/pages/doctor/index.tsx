@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from "react";
+import React, { useState, ReactNode, useEffect } from "react";
 import {
   DoctorPageCurrentTab,
   Header,
@@ -13,6 +13,9 @@ import { MdDashboard } from "react-icons/md";
 import { FaHospitalUser } from "react-icons/fa";
 import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { HiCog6Tooth } from "react-icons/hi2";
+import { PatientQueries } from "@/utils";
+import { useSession } from "next-auth/react";
+import { useAppointmentStore } from "@/hooks";
 
 export default function DoctorHomePage() {
   const { initialTab: currentTab, switchTab } = useTabs();
@@ -61,6 +64,20 @@ export default function DoctorHomePage() {
       ),
     },
   ];
+  const session = useSession();
+  const { getAllAppointments } = PatientQueries(session);
+  const { addBulk: addDoctorAppointmentsToStore } = useAppointmentStore();
+
+  useEffect(() => {
+    getAllAppointments()
+      .then((res) => {
+        console.log(res);
+        addDoctorAppointmentsToStore(res.appointments);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <>
