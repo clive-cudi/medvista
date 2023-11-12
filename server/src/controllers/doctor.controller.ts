@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { User } from "../models/user.model";
+import { User, UserType } from "../models/user.model";
 import { Diagnosis } from "../models/diagnosis.model";
 import { v4, v4 as v4ID } from "uuid";
 import bcrypt from "bcryptjs";
@@ -12,15 +12,80 @@ const getAllPatients = (req: Request, res: Response) => {
   User.findOne({ id: id, usertype: "doctor" })
     .then((user) => {
       if (user) {
-        return res.status(200).json({
-          success: true,
-          message: "All patients",
-          usertoken: {
-            user: usertoken,
-            token: usertoken.token,
-          },
-          patients: user.doctor.patients,
-        });
+        const activePatients = user.doctor.activePatients;
+        const inActivePatients = user.doctor.inActivePatients;
+        const archivedPatients = user.doctor.archivedPatients;
+        const patients = [
+          ...activePatients.map((a_p) => ({ id: a_p, status: "active" })),
+          ...inActivePatients.map((i_p) => ({
+            id: i_p,
+            status: "inactive",
+          })),
+          ...archivedPatients.map((ar_p) => ({
+            id: ar_p,
+            status: "archived",
+          })),
+        ];
+
+        User.find({
+          id: { $in: patients.map((p_) => p_.id) },
+          usertype: "patient",
+        })
+          .then((found_patients) => {
+            const patientStatusConstruct: { [key: string]: UserType[] } = {
+              active: [],
+              inactive: [],
+              archived: [],
+            };
+
+            for (let i = 0; i < found_patients.length; i++) {
+              const targetPatient = patients.find(
+                (pt) => pt.id === found_patients[i].id
+              );
+
+              const { patient, password, ...doc } = {
+                ...found_patients[i]._doc,
+                patient: {},
+                password: "_",
+              };
+
+              if (targetPatient) {
+                patientStatusConstruct[targetPatient.status] = [
+                  ...patientStatusConstruct[targetPatient.status],
+                  doc,
+                ];
+              }
+            }
+
+            return res.status(200).json({
+              success: true,
+              message: "All patients",
+              usertoken: {
+                user: usertoken,
+                token: usertoken.token,
+              },
+              patients: patientStatusConstruct,
+              error: {
+                status: false,
+                code: null,
+              },
+            });
+          })
+          .catch((patients_find_err) => {
+            return res.status(500).json({
+              success: false,
+              message: "Internal Server Error",
+              usertoken: {
+                user: null,
+                token: null,
+              },
+              error: {
+                status: true,
+                code: "internal_server_error",
+                debug: patients_find_err,
+              },
+            });
+          });
       } else {
         return res.status(404).json({
           success: false,
@@ -1128,4 +1193,5 @@ export {
   mockAllPatients,
   mockAllDoctors,
   mockPatient,
+  createMedicalRecord,
 };

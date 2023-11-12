@@ -7,3 +7,4 @@ export { BookAppointmentPopup } from "./BookAppointmentPopup";
 export { AppointmentInfoPopup } from "./AppointmentInfoPopup";
 export { UpdateAppointmentPopup } from "./UpdateAppointmentPopup";
 export { PromptGlimpseApprovalPopup } from "./PromptGlimpseApprovalPopup";
+export { PatientInfoPopup } from "./PatientInfoPopup";

@@ -13,9 +13,9 @@ import { MdDashboard } from "react-icons/md";
 import { FaHospitalUser } from "react-icons/fa";
 import { BsFillFileEarmarkTextFill } from "react-icons/bs";
 import { HiCog6Tooth } from "react-icons/hi2";
-import { PatientQueries } from "@/utils";
+import { DoctorQueries, PatientQueries } from "@/utils";
 import { useSession } from "next-auth/react";
-import { useAppointmentStore } from "@/hooks";
+import { useAppointmentStore, usePatientStore } from "@/hooks";
 
 export default function DoctorHomePage() {
   const { initialTab: currentTab, switchTab } = useTabs();
@@ -67,12 +67,26 @@ export default function DoctorHomePage() {
   const session = useSession();
   const { getAllAppointments } = PatientQueries(session);
   const { addBulk: addDoctorAppointmentsToStore } = useAppointmentStore();
+  const { getMyPatients } = DoctorQueries(session);
+  const { addBulk: addBulkPatientsToStore } = usePatientStore();
 
   useEffect(() => {
     getAllAppointments()
       .then((res) => {
         console.log(res);
         addDoctorAppointmentsToStore(res.appointments);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    getMyPatients()
+      .then((res) => {
+        console.log(res);
+        const { active, inactive, archived } = res.patients;
+        addBulkPatientsToStore(active, "active");
+        addBulkPatientsToStore(inactive, "inactive");
+        addBulkPatientsToStore(archived, "archived");
       })
       .catch((err) => {
         console.log(err);
